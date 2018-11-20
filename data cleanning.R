@@ -29,4 +29,14 @@ which(is.na(data$`Publisher ID`))
 data<-data[-c(4511),]
 data$`Bid Strategy`[is.na(data$`Bid Strategy`)] <- "No Strategy"
 
+str(data)
+data$`Search Engine Bid`<- as.numeric(gsub('[$,]', '',data$`Search Engine Bid`))
+data$`Avg. Cost per Click`<- as.numeric(gsub('[$,]', '',data$`Avg. Cost per Click`))
+data$`Total Cost/ Trans`<- as.numeric(gsub('[$,]', '',data$`Total Cost/ Trans`))
+data$`Amount`<- as.numeric(gsub('[$,]', '',data$`Amount`))
+data$`Total Cost`<- as.numeric(gsub('[$,]', '',data$`Total Cost`))
+data$`Engine Click Thru %`<- as.numeric(gsub('[%,]', '',data$`Engine Click Thru %`))
+data$`Trans. Conv. %`<- as.numeric(gsub('[%,]', '',data$`Trans. Conv. %`))
+
+
 write.csv(data, file="clean data.csv")
