@@ -16,21 +16,21 @@ data<-clean_data
 #Add additional variables
 data$`Amount/Booking`<- round(data$Amount/data$`Total Volume of Bookings`)
 data$`Amount/Booking`<- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
-data$ Revenue <- data$Amount-data$`Total Cost`
-data$`Revenue/Trans`<- data$`Amount/Booking`-data$`Total Cost/ Trans`
+data$ Profit <- data$Amount-data$`Total Cost`
+data$`Profit/Trans`<- data$`Amount/Booking`-data$`Total Cost/ Trans`
 
-summary(data$Revenue)
+summary(data$Profit)
 
-#Group by Revenue
+#Group by Profit
 #A-Above Mean, B-between Mean and 0, C-under 0
 for (i in 1:nrow(data)) {
 
-    if(data$Revenue[i]> mean(data$Revenue)) {
-    data$`Revenue Group`[i]<-'A'
-  } else if(data$Revenue[i]<= mean(data$Revenue) & data$Revenue[i]>0) {
-    data$`Revenue Group`[i]<-'B'
+    if(data$Profit[i]> mean(data$Profit)) {
+    data$`Profit Group`[i]<-'A'
+  } else if(data$Profit[i]<= mean(data$Profit) & data$Profit[i]>0) {
+    data$`Profit Group`[i]<-'B'
   }
-  else {data$`Revenue Group`[i]<-'C'}
+  else {data$`Profit Group`[i]<-'C'}
 }
 
 summary(data)
@@ -43,53 +43,53 @@ colnames(data)
 
 # Ad Publisher Name vs. Keyword Match Type
 table(data$`Publisher Name`, data$`Match Type`)
-# Ad Publisher Name vs. Revenue Group
-table(data$`Publisher Name`, data$`Revenue Group`)
+# Ad Publisher Name vs. Profit Group
+table(data$`Publisher Name`, data$`Profit Group`)
 
-####### Ying why did you use prop.table?
-round(prop.table(table(data$`Publisher Name`, data$`Revenue Group`), 2)*100)
+# Probabilities of each Ad Publisher Name in each Profit Group
+round(prop.table(table(data$`Publisher Name`, data$`Profit Group`), 2)*100)
 
-# Keyword Match Type vs. Revenue Group
-table(data$`Match Type`, data$`Revenue Group`)
-round(prop.table(table(data$`Match Type`, data$`Revenue Group`), 2)*100)
+# Keyword Match Type vs. Profit Group
+table(data$`Match Type`, data$`Profit Group`)
+round(prop.table(table(data$`Match Type`, data$`Profit Group`), 2)*100)
 
 library(ggplot2)
 
-# side-by-side barchart of Publisher by Revenue Group
-ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Revenue Group`)) + 
+# side-by-side barchart of Publisher by Profit Group
+ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Profit Group`)) + 
   geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 90))+
-  labs(fill='Revenue Group')
-# Google-US has a staggering amount of negative revenue keywords
+  labs(fill='Profit Group')
+# Google-US has a staggering amount of negative Profit keywords
 
-# side-by-side barchart of Match Type by Revenue Group
-ggplot(data, aes(x = data$`Match Type`, fill = data$`Revenue Group`)) + 
+# side-by-side barchart of Match Type by Profit Group
+ggplot(data, aes(x = data$`Match Type`, fill = data$`Profit Group`)) + 
   geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 90))+
-  labs(fill='Revenue Group')
-# broad keywords are losing the most revenue... but also the most (relatively)
+  labs(fill='Profit Group')
+# broad keywords are losing the most Profit... but also the most (relatively)
 
-#Box plot of revenue by match type
+#Box plot of Profit by match type
 
-ggplot(data, aes(x = as.factor(data$`Match Type`), y = log(data$`Revenue`))) +
+ggplot(data, aes(x = as.factor(data$`Match Type`), y = log(data$`Profit`))) +
   geom_boxplot()+
   xlab("Match Type")+
-  ylab("Revenue(log)")+
-  ggtitle("BoxPlot Revenue by Match Type")
+  ylab("Profit(log)")+
+  ggtitle("BoxPlot Profit by Match Type")
 
 
 
 #Other Plot way
-# ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Revenue Group`)) + 
+# ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Profit Group`)) + 
 #   geom_bar(position = 'fill') +
-#   ylab("Revenue Group")
+#   ylab("Profit Group")
 # 
-# ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Revenue Group`)) +
+# ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Profit Group`)) +
 #   geom_bar()
 
 # ggplot(data, aes(x = data$`Publisher Name` )) + 
 #   geom_bar() +
-#   facet_wrap(~ data$`Revenue Group`)
+#   facet_wrap(~ data$`Profit Group`)
 
 
 
@@ -106,11 +106,11 @@ round(avg(data.`Trans. Conv. %`), 2) as Trans_Conv_perc,
 round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
 round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
 round(avg(data.`Amount/Booking`)) as Amount_per_booking,
-round(avg(data.`Revenue/Trans`)) as revenue_per_trans,
-round(avg(data.`Revenue`)) as revenue
+round(avg(data.`Profit/Trans`)) as Profit_per_trans,
+round(avg(data.`Profit`)) as Profit
 FROM data
 GROUP BY data.`Publisher Name`
-ORDER BY revenue DESC
+ORDER BY Profit DESC
                  ")
 
 #Google_global perform best
@@ -127,11 +127,11 @@ round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc,
       round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
       round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
-      round(avg(data.`Revenue/Trans`)) as revenue_per_trans,
-      round(avg(data.`Revenue`)) as revenue
+      round(avg(data.`Profit/Trans`)) as Profit_per_trans,
+      round(avg(data.`Profit`)) as Profit
       FROM data
       GROUP BY data.`Bid Strategy`
-      ORDER BY revenue DESC
+      ORDER BY Profit DESC
       ")
 #Postiion 1-4 Bid Strategy perform best
 P1_4 <- data[which(data$`Bid Strategy`=="Postiion 1-4 Bid Strategy"), ]
@@ -148,16 +148,15 @@ round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid,
       round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
       round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
-      round(avg(data.`Revenue/Trans`)) as revenue_per_trans,
-      round(avg(data.`Revenue`)) as revenue
+      round(avg(data.`Profit/Trans`)) as Profit_per_trans,
+      round(avg(data.`Profit`)) as Profit
       FROM data
       GROUP BY data.`Match Type`
-      ORDER BY revenue DESC
+      ORDER BY Profit DESC
       ")
 
 #Exact perform best
-#Compare with talbe, very interesting
-####### Ying what's talbe??
+#Compare with Match Type table, very interesting
 Exact <- data[which(data$`Match Type`=="Exact"), ]
 
 ###############################
@@ -172,11 +171,11 @@ sqldf("SELECT data.`Campaign`,
       round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
       round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
-      round(avg(data.`Revenue/Trans`)) as revenue_per_trans,
-      round(avg(data.`Revenue`)) as revenue
+      round(avg(data.`Profit/Trans`)) as Profit_per_trans,
+      round(avg(data.`Profit`)) as Profit
       FROM data
       GROUP BY data.`Campaign`
-      ORDER BY revenue DESC
+      ORDER BY Profit DESC
       ")
 #Air France Branded performed the best
 
@@ -195,11 +194,11 @@ round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid,
       round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
       round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
-      round(avg(data.`Revenue/Trans`)) as revenue_per_trans,
-      round(avg(data.`Revenue`)) as revenue
+      round(avg(data.`Profit/Trans`)) as Profit_per_trans,
+      round(avg(data.`Profit`)) as Profit
       FROM data
       GROUP BY data.`Publisher Name`,data.`Match Type`,data.`Bid Strategy`
-      ORDER BY revenue DESC
+      ORDER BY Profit DESC
       ")
 # Google - US  Exact  No Strategy  perform best
 
@@ -224,7 +223,7 @@ char_to_num <- function(x){
     }#closing if statement
   }#closing the for loop
   return(x)
-}#clsoing char_to_num function
+}#closing char_to_num function
 my_new_df <- char_to_num(x=data[1:30,])
 
 my_new_df
@@ -238,10 +237,10 @@ my_new_df
 library(magrittr)
 library(dplyr)
 data %>%
-  summarize(r = cor(`Total Cost`, Revenue))
+  summarize(r = cor(`Total Cost`, Profit))
 
 
-lm(`Total Cost`~ Revenue, data = data)
+lm(`Total Cost`~ Profit, data = data)
 
 #########################
 ##Regression
