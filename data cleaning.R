@@ -17,13 +17,15 @@ str(data)
 library(sqldf)
 sqldf("SELECT distinct data.`Keyword Type`
       FROM data")
+# Keyword Type only has one output: "Unassigned". Not useful to our analysis.
 
 identical(data[['Total Cost']],data[['Click Charges']])
+# TRUE
 
-#drop two columns
+# drop two columns
 data<-within(data, rm("Keyword Type", "Click Charges"))
 
-#check NA
+#check for NAs
 colSums(is.na.data.frame(data))
 which(is.na(data$`Publisher ID`))
 data<-data[-c(4511),]
@@ -37,6 +39,5 @@ data$`Amount`<- as.numeric(gsub('[$,]', '',data$`Amount`))
 data$`Total Cost`<- as.numeric(gsub('[$,]', '',data$`Total Cost`))
 data$`Engine Click Thru %`<- as.numeric(gsub('[%,]', '',data$`Engine Click Thru %`))
 data$`Trans. Conv. %`<- as.numeric(gsub('[%,]', '',data$`Trans. Conv. %`))
-
 
 write.csv(data, file="clean data.csv")

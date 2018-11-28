@@ -3,7 +3,9 @@
 ############################
 
 library(readr)
-clean_data <- read_csv("data/processed/clean data.csv")
+clean_data <- read_csv("data/processed/clean data.csv",
+                       col_types = cols(X1 = col_skip()))
+
 View(clean_data)
 
 data<-clean_data
@@ -11,7 +13,7 @@ data<-clean_data
 #############################
 # Pre work
 #############################
-#Additional variables
+#Add additional variables
 data$`Amount/Booking`<- round(data$Amount/data$`Total Volume of Bookings`)
 data$`Amount/Booking`<- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
 data$ Revenue <- data$Amount-data$`Total Cost`
