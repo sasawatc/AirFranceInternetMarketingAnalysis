@@ -40,4 +40,4 @@ data$`Total Cost`<- as.numeric(gsub('[$,]', '',data$`Total Cost`))
 data$`Engine Click Thru %`<- as.numeric(gsub('[%,]', '',data$`Engine Click Thru %`))
 data$`Trans. Conv. %`<- as.numeric(gsub('[%,]', '',data$`Trans. Conv. %`))
 
-write.csv(data, file="clean data.csv")
+write.csv(data, file="clean_data.csv", row.names = FALSE, na = '')

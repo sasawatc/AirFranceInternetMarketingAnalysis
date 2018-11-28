@@ -3,8 +3,8 @@
 ############################
 
 library(readr)
-clean_data <- read_csv("data/processed/clean data.csv",
-                       col_types = cols(X1 = col_skip()))
+clean_data <- read_csv("data/processed/clean_data.csv", 
+                       col_types = cols(`Keyword ID` = col_character()))
 
 View(clean_data)
 
