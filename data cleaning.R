@@ -31,6 +31,7 @@ which(is.na(data$`Publisher ID`))
 data<-data[-c(4511),]
 data$`Bid Strategy`[is.na(data$`Bid Strategy`)] <- "No Strategy"
 
+# Change to numeric columns
 str(data)
 data$`Search Engine Bid`<- as.numeric(gsub('[$,]', '',data$`Search Engine Bid`))
 data$`Avg. Cost per Click`<- as.numeric(gsub('[$,]', '',data$`Avg. Cost per Click`))
@@ -40,4 +41,12 @@ data$`Total Cost`<- as.numeric(gsub('[$,]', '',data$`Total Cost`))
 data$`Engine Click Thru %`<- as.numeric(gsub('[%,]', '',data$`Engine Click Thru %`))
 data$`Trans. Conv. %`<- as.numeric(gsub('[%,]', '',data$`Trans. Conv. %`))
 
+# Fix typos in Bid Strategy
+data$`Bid Strategy` <- gsub('Postiion', 'Position', data$`Bid Strategy`)
+data$`Bid Strategy` <- gsub('1 -2', '1-2', data$`Bid Strategy`)
+data$`Bid Strategy` <- gsub('1- 3', '1-3', data$`Bid Strategy`)
+sqldf("SELECT distinct data.`Bid Strategy`
+      FROM data")
+
+# Export
 write.csv(data, file="clean_data.csv", row.names = FALSE, na = '')
