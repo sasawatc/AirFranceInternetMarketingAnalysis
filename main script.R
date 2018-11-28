@@ -203,13 +203,49 @@ round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid,
       ")
 # Google - US  Exact  No Strategy  perform best
 
+###########################
+##Char to Num
+##########################
+
+char_to_num <- function(x){
+  x <- as.data.frame(x)#need to make sure that this is a data frame
+  n_col_x <- ncol(x) #getting the count of columns for this data frame
+  for (i in 1:n_col_x){
+    if(is.character(x[,i])){
+      options <-c()
+      options <- unique(x[,i])
+      if(length(options)<20) {
+        for(z in 1:length(options)){
+          x[,i]<- gsub(as.character(options[z]),paste(z), x[,i])
+          
+        }#closing z loop
+        x[,i]<-as.numeric(x[,i])
+      }#closing my options if statement
+    }#closing if statement
+  }#closing the for loop
+  return(x)
+}#clsoing char_to_num function
+my_new_df <- char_to_num(x=data[1:30,])
+
+my_new_df
+
+
+
 
 ##########################
 ##Correlation
 ##########################
+library(magrittr)
+library(dplyr)
+data %>%
+  summarize(r = cor(`Total Cost`, Revenue))
 
 
+lm(`Total Cost`~ Revenue, data = data)
 
+#########################
+##Regression
+#########################
 
 ######################
 #Might use later
