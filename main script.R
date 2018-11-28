@@ -3,8 +3,8 @@
 ############################
 
 library(readr)
-clean_data <- read_csv("data/processed/clean data.csv",
-                       col_types = cols(X1 = col_skip()))
+clean_data <- read_csv("data/processed/clean_data.csv",
+                       col_types = cols(`Keyword ID` = col_character()))
 
 View(clean_data)
 
@@ -134,8 +134,8 @@ round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc,
       GROUP BY data.`Bid Strategy`
       ORDER BY Profit DESC
       ")
-#Postiion 1-4 Bid Strategy perform best
-P1_4 <- data[which(data$`Bid Strategy`=="Postiion 1-4 Bid Strategy"), ]
+#Position 1-4 Bid Strategy perform best
+P1_4 <- data[which(data$`Bid Strategy`=="Position 1-4 Bid Strategy"), ]
 
 ###############################
 #Grouping Method 3: Match type
