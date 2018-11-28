@@ -3,8 +3,8 @@
 ############################
 
 library(readr)
-clean_data <- read_csv("data/processed/clean_data.csv", 
-                       col_types = cols(`Keyword ID` = col_character()))
+clean_data <- read_csv("data/processed/clean data.csv",
+                       col_types = cols(X1 = col_skip()))
 
 View(clean_data)
 
@@ -18,6 +18,7 @@ data$`Amount/Booking`<- round(data$Amount/data$`Total Volume of Bookings`)
 data$`Amount/Booking`<- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
 data$ Profit <- data$Amount-data$`Total Cost`
 data$`Profit/Trans`<- data$`Amount/Booking`-data$`Total Cost/ Trans`
+data$ROI <- data$Profit / data$`Total Cost`
 
 summary(data$Profit)
 
@@ -258,3 +259,28 @@ lm(`Total Cost`~ Profit, data = data)
 # overture_us <- data[which(data$`Publisher Name`=="Overture - US"),]
 # msn_us <- data[which(data$`Publisher Name`=="MSN - US"),]
 
+
+
+has_booking <- data[data['Total Volume of Bookings'] > 0,]
+
+ggplot(has_booking, aes(x = `Total Cost`)) +
+  geom_histogram()
+
+
+# total cost > 600 is outlier 
+outlier <- has_booking[has_booking["Total Cost"] > 600,]
+
+no_outlier <- has_booking[has_booking["Total Cost"] <= 600,]
+
+ggplot(no_outlier, aes(x = `Total Cost`, y = ROI, color = factor(`Publisher Name`))) +
+  geom_jitter(size = 4)
+
+ggplot(no_outlier, aes(x = `Total Cost`, y = ROI, color = factor(`Match Type`))) +
+  geom_point(alpha = 0.5, size = 4)
+
+ggplot(data, aes(x = `Match Type`, y = ROI)) + 
+  geom_boxplot()
+
+sqldf("SELECT `Publisher Name`, `Match Type`, Amount, `Total Cost`, Profit, ROI
+      FROM has_booking
+      ORDER BY ROI DESC")
