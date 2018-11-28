@@ -81,6 +81,11 @@ for(row in 1:nrow(data)){
 
 summary(data$ROA)
 
+##############################
+##Outliers
+##############################
+outlier1 <- data[which(data$Amount!=0 & data$`Total Cost`==0),]
+
 #############################
 ## Data exploration
 #############################
