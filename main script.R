@@ -9,9 +9,9 @@ View(clean_data)
 data<-clean_data
 
 #############################
-#Pre work
+# Pre work
 #############################
-#Additional value
+#Additional variables
 data$`Amount/Booking`<- round(data$Amount/data$`Total Volume of Bookings`)
 data$`Amount/Booking`<- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
 data$ Revenue <- data$Amount-data$`Total Cost`
@@ -35,16 +35,19 @@ summary(data)
 
 
 #############################
-##Data exploratory
+## Data exploration
 #############################
 colnames(data)
 
+# Ad Publisher Name vs. Keyword Match Type
 table(data$`Publisher Name`, data$`Match Type`)
-
-
+# Ad Publisher Name vs. Revenue Group
 table(data$`Publisher Name`, data$`Revenue Group`)
+
+####### Ying why did you use prop.table?
 round(prop.table(table(data$`Publisher Name`, data$`Revenue Group`), 2)*100)
 
+# Keyword Match Type vs. Revenue Group
 table(data$`Match Type`, data$`Revenue Group`)
 round(prop.table(table(data$`Match Type`, data$`Revenue Group`), 2)*100)
 
@@ -55,15 +58,16 @@ ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Revenue Group`)) +
   geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 90))+
   labs(fill='Revenue Group')
+# Google-US has a staggering amount of negative revenue keywords
 
 # side-by-side barchart of Match Type by Revenue Group
 ggplot(data, aes(x = data$`Match Type`, fill = data$`Revenue Group`)) + 
   geom_bar(position = "dodge") +
   theme(axis.text.x = element_text(angle = 90))+
   labs(fill='Revenue Group')
+# broad keywords are losing the most revenue... but also the most (relatively)
 
 #Box plot of revenue by match type
-
 
 ggplot(data, aes(x = as.factor(data$`Match Type`), y = log(data$`Revenue`))) +
   geom_boxplot()+
@@ -151,7 +155,7 @@ round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid,
 
 #Exact perform best
 #Compare with talbe, very interesting
-
+####### Ying what's talbe??
 Exact <- data[which(data$`Match Type`=="Exact"), ]
 
 ###############################
@@ -172,14 +176,15 @@ sqldf("SELECT data.`Campaign`,
       GROUP BY data.`Campaign`
       ORDER BY revenue DESC
       ")
-#Air France Branded perform best
+#Air France Branded performed the best
 
 AFB <- data[which(data$Campaign=="Air France Branded"), ]
 #############################
-#Multipul Ranking
+# Multiple Ranking
 #############################
 
-#Publisher-Match-Bit,  result the same by other combination order
+#Publisher-Match-Bid Strategy,  result the same by other combination order
+####### Ying please explain purpose of this code
 sqldf("SELECT data.`Publisher Name`,data.`Match Type`,data.`Bid Strategy`,
 round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid, 
       round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc, 
