@@ -2,8 +2,8 @@
 #Import Data
 #################################
 library(readr)
-air_france_doubleclick <- read_excle("data/processed/air_france_doubleclick.xlsx", 
-                                   col_types = cols(X24 = col_skip(), X25 = col_skip()))
+air_france_doubleclick <- read_csv("data/processed/air_france_doubleclick.csv", 
+                                   col_types = cols(`Keyword ID` = col_character()))
 View(air_france_doubleclick)
 
 ################################
