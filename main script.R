@@ -268,8 +268,50 @@ lm(`Total Cost`~ Profit, data = data)
 ##Regression
 #########################
 
-lr <- glm(Target ~ `Publisher Name` + `Bid Strategy` + `Search Engine Bid`, data = data, family = "binomial")
-summary(lr)
+# Split the data into training and test set
+#install.packages("caret")
+library(caret)
+no_id <- data.frame(data)
+no_id$Keyword.ID <- NULL # data can not be logged
+no_id$Profit <- NULL # we added in, should be not include in the model
+no_id$ROI <- NULL # we added in, should be not include in the model
+no_id$Profit.Group <- NULL # we added in, should be not include in the model
+no_id$Profit.Trans <- NULL # we added in, should be not include in the model
+no_id$Amount.Booking <- NULL # we added in, should be not include in the model
+no_id$Keyword <- NULL # too many observations
+no_id$Keyword.Group <- NULL # too many observations
+no_id$Publisher.ID <- NULL # not relevant
+no_id$Status <- NULL # not relevant
+
+set.seed(123)
+training.samples <- no_id$Target %>% 
+  createDataPartition(p = 0.8, list = FALSE)
+
+train.data  <- no_id[training.samples, ]
+test.data <- no_id[-training.samples, ]
+
+# model
+full.model <- glm(Target ~ ., data = no_id, family = "binomial")
+# coef(full.model)
+summary(full.model)
+
+# Select the most contributive variables
+library(MASS)
+
+both <- stepAIC(full.model, trace = FALSE)
+summary(both)
+#############
+# result
+#############
+# glm(formula = Target ~ Publisher.Name + Match.Type + Campaign + 
+#       Bid.Strategy + Search.Engine.Bid + Clicks + Avg.Cost.per.Click + 
+#       Impressions + Engine.Click.Thru.Percent + Avg.Pos + Trans.Conv.Percent + 
+#       Amount + Total.Cost + Total.Volume.of.Bookings, family = "binomial", 
+#     data = no_id)
+
+# step.model <- full.model %>% stepAIC(trace = FALSE)
+# coef(step.model)
+
 
 ######################
 #Might use later
