@@ -23,6 +23,19 @@ data$ Profit <- data$Amount-data$`Total Cost`
 data$`Profit/Trans`<- data$`Amount/Booking`-data$`Total Cost/ Trans`
 data$ROI <- data$Profit / data$`Total Cost`
 
+for(row in 1:nrow(data)){
+  # add 1 column to convert both A and B in Profit Group into 1 in target, C into 0
+  if(data$`Profit Group`[row] == "A" | data$`Profit Group`[row] == "B"){
+    data$Target[row] <- 1
+  }
+  else if(data$`Profit Group`[row] == "C"){
+    data$Target[row] <- 0
+  }
+  else{
+    data$Target[row] <- "need inspection" #??? everything is INT but this is a STRING
+  }
+}
+
 summary(data$Profit)
 
 #Group by Profit
@@ -250,6 +263,9 @@ lm(`Total Cost`~ Profit, data = data)
 ##Regression
 #########################
 
+lr <- glm(Target ~ factor(`Publisher Name`) + factor(`Bid Strategy`) + `Search Engine Bid`, data = data, family = "binomial")
+summary(lr)
+
 ######################
 #Might use later
 ######################
@@ -282,7 +298,8 @@ ggplot(no_outlier, aes(x = `Total Cost`, y = ROI, color = factor(`Match Type`)))
   geom_point(alpha = 0.5, size = 4)
 
 ggplot(data, aes(x = `Match Type`, y = ROI)) + 
-  geom_boxplot()
+  geom_jitter() +
+  theme_bw()
 
 sqldf("SELECT `Publisher Name`, `Match Type`, Amount, `Total Cost`, Profit, ROI
       FROM has_booking
