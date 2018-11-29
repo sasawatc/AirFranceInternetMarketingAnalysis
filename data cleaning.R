@@ -10,7 +10,7 @@ View(air_france_doubleclick)
 #data cleaning
 ################################
 #check structure 
-data<-air_france_doubleclick
+data <- data.frame(air_france_doubleclick)
 str(data)
 
 #check identical variables and duplicated columns
