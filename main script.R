@@ -6,10 +6,13 @@ library(readr)
 clean_data <- read_csv("data/processed/clean_data.csv",
                        col_types = cols(`Keyword ID` = col_character()))
 
-View(clean_data)
+# View(clean_data)
 
-data<-clean_data
+# Deep copy dataframe
+data <- data.frame(clean_data)
 
+# Check if the dataframe is really a different one
+tracemem(data) == tracemem(clean_data)
 #############################
 # Pre work
 #############################
