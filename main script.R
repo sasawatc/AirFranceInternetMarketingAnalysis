@@ -9,7 +9,7 @@ clean_data <- read_csv("data/processed/clean_data.csv",
 # View(clean_data)
 
 # Deep copy dataframe
-data <- data.frame(clean_data)
+data <- data.frame(clean_data, check.names = FALSE)
 
 # Check if the dataframe is really a different one
 tracemem(data) == tracemem(clean_data)
@@ -17,10 +17,10 @@ tracemem(data) == tracemem(clean_data)
 # Pre work
 #############################
 #Add additional variables
-data$`Amount/Booking`<- round(data$Amount/data$`Total Volume of Bookings`)
-data$`Amount/Booking`<- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
-data$ Profit <- data$Amount-data$`Total Cost`
-data$`Profit/Trans`<- data$`Amount/Booking`-data$`Total Cost/ Trans`
+data$`Amount/Booking` <- round(data$Amount / data$`Total Volume of Bookings`)
+data$`Amount/Booking` <- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
+data$Profit <- data$Amount-data$`Total Cost`
+data$`Profit/Trans` <- data$`Amount/Booking`-data$`Total Cost/ Trans`
 data$ROI <- data$Profit / data$`Total Cost`
 
 for(row in 1:nrow(data)){
