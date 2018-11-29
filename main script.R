@@ -4,7 +4,12 @@
 
 library(readr)
 clean_data <- read_csv("data/processed/clean_data.csv",
-                       col_types = cols(`Keyword ID` = col_character()))
+                       col_types = cols(`Keyword ID` = col_character(),
+                                        `Publisher ID` = col_factor(NULL),
+                                        `Publisher Name` = col_factor(NULL),
+                                        `Bid Strategy` = col_factor(NULL),
+                                        `Match Type` = col_factor(NULL),
+                                        `Status` = col_factor(NULL)))
 
 # View(clean_data)
 
@@ -263,7 +268,7 @@ lm(`Total Cost`~ Profit, data = data)
 ##Regression
 #########################
 
-lr <- glm(Target ~ factor(`Publisher Name`) + factor(`Bid Strategy`) + `Search Engine Bid`, data = data, family = "binomial")
+lr <- glm(Target ~ `Publisher Name` + `Bid Strategy` + `Search Engine Bid`, data = data, family = "binomial")
 summary(lr)
 
 ######################
