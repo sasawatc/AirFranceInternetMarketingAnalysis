@@ -20,21 +20,8 @@ tracemem(data) == tracemem(clean_data)
 data$`Amount/Booking` <- round(data$Amount / data$`Total Volume of Bookings`)
 data$`Amount/Booking` <- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
 data$Profit <- data$Amount-data$`Total Cost`
-data$`Profit/Trans` <- data$`Amount/Booking`-data$`Total Cost/ Trans`
+data$`Profit/Trans` <- data$`Amount/Booking`-data$`Total Cost/Trans`
 data$ROI <- data$Profit / data$`Total Cost`
-
-for(row in 1:nrow(data)){
-  # add 1 column to convert both A and B in Profit Group into 1 in target, C into 0
-  if(data$`Profit Group`[row] == "A" | data$`Profit Group`[row] == "B"){
-    data$Target[row] <- 1
-  }
-  else if(data$`Profit Group`[row] == "C"){
-    data$Target[row] <- 0
-  }
-  else{
-    data$Target[row] <- "need inspection" #??? everything is INT but this is a STRING
-  }
-}
 
 summary(data$Profit)
 
@@ -51,6 +38,19 @@ for (i in 1:nrow(data)) {
 }
 
 summary(data)
+
+for(row in 1:nrow(data)){
+  # add 1 column to convert both A and B in Profit Group into 1 in target, C into 0
+  if(data$`Profit Group`[row] == "A" | data$`Profit Group`[row] == "B"){
+    data$Target[row] <- 1
+  }
+  else if(data$`Profit Group`[row] == "C"){
+    data$Target[row] <- 0
+  }
+  else{
+    data$Target[row] <- 1000 #1000 arbitrary large number to draw attention
+  }
+}
 
 
 #############################
@@ -117,11 +117,11 @@ ggplot(data, aes(x = as.factor(data$`Match Type`), y = log(data$`Profit`))) +
 
 library(sqldf)
 sqldf("SELECT data.`Publisher Name`, 
-round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc, 
-round(avg(data.`Avg. Cost per Click`), 2) as Avg_Cost_per_Click,
-round(avg(data.`Trans. Conv. %`), 2) as Trans_Conv_perc,
-round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
-round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
+round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
+round(avg(data.`Avg Cost per Click`), 2) as Avg_Cost_per_Click,
+round(avg(data.`Trans Conv Percent`), 2) as Trans_Conv_perc,
+round(avg(data.`Avg Pos`),2) as Avg_Pos,
+round(avg(data.`Total Cost/Trans`), 2) as Total_Cost_o_Trans,
 round(avg(data.`Amount/Booking`)) as Amount_per_booking,
 round(avg(data.`Profit/Trans`)) as Profit_per_trans,
 round(avg(data.`Profit`)) as Profit
@@ -138,11 +138,11 @@ ORDER BY Profit DESC
 #############################
 sqldf("SELECT data.`Bid Strategy`,
 round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid, 
-round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc, 
-      round(avg(data.`Avg. Cost per Click`), 2) as Avg_Cost_per_Click,
-      round(avg(data.`Trans. Conv. %`), 2) as Trans_Conv_perc,
-      round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
-      round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
+round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
+      round(avg(data.`Avg Cost per Click`), 2) as Avg_Cost_per_Click,
+      round(avg(data.`Trans Conv Percent`), 2) as Trans_Conv_perc,
+      round(avg(data.`Avg Pos`),2) as Avg_Pos,
+      round(avg(data.`Total Cost/Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
       round(avg(data.`Profit/Trans`)) as Profit_per_trans,
       round(avg(data.`Profit`)) as Profit
@@ -159,11 +159,11 @@ P1_4 <- data[which(data$`Bid Strategy`=="Position 1-4 Bid Strategy"), ]
 #sqldf("SELECT DISTINCT data.`Match Type` from data ")
 sqldf("SELECT data.`Match Type`,
 round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid, 
-      round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc, 
-      round(avg(data.`Avg. Cost per Click`), 2) as Avg_Cost_per_Click,
-      round(avg(data.`Trans. Conv. %`), 2) as Trans_Conv_perc,
-      round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
-      round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
+      round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
+      round(avg(data.`Avg Cost per Click`), 2) as Avg_Cost_per_Click,
+      round(avg(data.`Trans Conv Percent`), 2) as Trans_Conv_perc,
+      round(avg(data.`Avg Pos`),2) as Avg_Pos,
+      round(avg(data.`Total Cost/Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
       round(avg(data.`Profit/Trans`)) as Profit_per_trans,
       round(avg(data.`Profit`)) as Profit
@@ -182,11 +182,11 @@ Exact <- data[which(data$`Match Type`=="Exact"), ]
 #sqldf("SELECT DISTINCT data.`Match Type` from data ")
 sqldf("SELECT data.`Campaign`,
       round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid, 
-      round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc, 
-      round(avg(data.`Avg. Cost per Click`), 2) as Avg_Cost_per_Click,
-      round(avg(data.`Trans. Conv. %`), 2) as Trans_Conv_perc,
-      round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
-      round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
+      round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
+      round(avg(data.`Avg Cost per Click`), 2) as Avg_Cost_per_Click,
+      round(avg(data.`Trans Conv Percent`), 2) as Trans_Conv_perc,
+      round(avg(data.`Avg Pos`),2) as Avg_Pos,
+      round(avg(data.`Total Cost/Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
       round(avg(data.`Profit/Trans`)) as Profit_per_trans,
       round(avg(data.`Profit`)) as Profit
@@ -205,11 +205,11 @@ AFB <- data[which(data$Campaign=="Air France Branded"), ]
 ####### Ying please explain purpose of this code
 sqldf("SELECT data.`Publisher Name`,data.`Match Type`,data.`Bid Strategy`,
 round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid, 
-      round(avg(data.`Engine Click Thru %`),2) as Engine_Click_Thru_perc, 
-      round(avg(data.`Avg. Cost per Click`), 2) as Avg_Cost_per_Click,
-      round(avg(data.`Trans. Conv. %`), 2) as Trans_Conv_perc,
-      round(avg(data.`Avg. Pos.`),2) as Avg_Pos,
-      round(avg(data.`Total Cost/ Trans`), 2) as Total_Cost_o_Trans,
+      round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
+      round(avg(data.`Avg Cost per Click`), 2) as Avg_Cost_per_Click,
+      round(avg(data.`Trans Conv Percent`), 2) as Trans_Conv_perc,
+      round(avg(data.`Avg Pos`),2) as Avg_Pos,
+      round(avg(data.`Total Cost/Trans`), 2) as Total_Cost_o_Trans,
       round(avg(data.`Amount/Booking`)) as Amount_per_booking,
       round(avg(data.`Profit/Trans`)) as Profit_per_trans,
       round(avg(data.`Profit`)) as Profit
