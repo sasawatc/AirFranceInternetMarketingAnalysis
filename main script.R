@@ -276,7 +276,14 @@ library(GGally)
 #ggcorr() automatically plots only numeric variables
 ggcorr(my_new_df,
        label = T,
-       label_alpha = 0.8)
+       label_alpha = 0.5,
+       label_size = 2,
+       layout.exp = 0.1,
+       size = 1.5,
+       hjust = 0.75,
+       nbreaks = 6,
+       angle = -45,
+       legend.size = 7)
 
 
 #########################
