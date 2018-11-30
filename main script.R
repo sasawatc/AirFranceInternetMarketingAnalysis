@@ -18,6 +18,7 @@ data <- data.frame(clean_data, check.names = FALSE)
 
 # Check if the dataframe is really a different one
 tracemem(data) == tracemem(clean_data)
+
 #############################
 # Pre work
 #############################
@@ -29,6 +30,7 @@ data$`Profit/Trans` <- data$`Amount/Booking`-data$`Total Cost/Trans`
 data$ROI <- data$Profit / data$`Total Cost`
 
 summary(data$Profit)
+summary(data$ROI)
 
 #Group by Profit
 #A-Above Mean, B-between Mean and 0, C-under 0
@@ -207,7 +209,6 @@ AFB <- data[which(data$Campaign=="Air France Branded"), ]
 #############################
 
 #Publisher-Match-Bid Strategy,  result the same by other combination order
-####### Ying please explain purpose of this code
 sqldf("SELECT data.`Publisher Name`,data.`Match Type`,data.`Bid Strategy`,
 round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid, 
       round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
@@ -260,9 +261,10 @@ library(magrittr)
 library(dplyr)
 data %>%
   summarize(r = cor(`Total Cost`, Profit))
-
+# so...cost and profit are not related cuz r is 0.48??
 
 lm(`Total Cost`~ Profit, data = data)
+# again, not correlated?
 
 #########################
 ##Regression
