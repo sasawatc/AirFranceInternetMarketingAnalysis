@@ -28,9 +28,15 @@ data$`Amount/Booking` <- as.numeric(gsub('NaN', 0,data$`Amount/Booking`))
 data$Profit <- data$Amount-data$`Total Cost`
 data$`Profit/Trans` <- data$`Amount/Booking`-data$`Total Cost/Trans`
 data$ROI <- data$Profit / data$`Total Cost`
+# Return On Advertising
+data$ROA <- data$Amount / data$`Total Cost`
 
 summary(data$Profit)
 summary(data$ROI)
+summary(data$ROA)
+
+# ROI has infinity data, remove that point.
+data <- subset(data, `Keyword ID` != "43000000013971488")
 
 #Group by Profit
 #A-Above Mean, B-between Mean and 0, C-under 0
@@ -116,29 +122,59 @@ ggplot(data, aes(x = as.factor(data$`Match Type`), y = log(data$`Profit`))) +
 #   facet_wrap(~ data$`Profit Group`)
 
 #############################
-# Summaries per Match Type
+# Means per Match Type
 #############################
 sqldf("SELECT distinct data.`Match Type`
       FROM data")
 
-keep <- c("Clicks", "Amount", "Total Volume of Booking")
+#keep <- c("Clicks", "Amount", "Total Volume of Booking")
 
 Advanced <- data[which(data$`Match Type`=="Advanced"), ]
-A_df <- subset(Advanced, select= keep)
 
 Broad <- data[which(data$`Match Type`=="Broad"), ]
-B_df <- data[, keep]
 
 Exact <- data[which(data$`Match Type`=="Exact"), ]
 
 Standard <- data[which(data$`Match Type`=="Standard"), ]
 
-summary(Advanced)
+### How to show just means from summary for all 3 metrics at the same time?
+
+#Clicks
+# summary(Advanced$Clicks)
+# summary(Broad$Clicks)
+# summary(Exact$Clicks)
+# summary(Standard$Clicks)
+
+mean(Advanced$Clicks)
+mean(Broad$Clicks)
+mean(Exact$Clicks)
+mean(Standard$Clicks)
+
+#Amount
+# summary(Advanced$Amount)
+# summary(Broad$Amount)
+# summary(Exact$Amount)
+# summary(Standard$Amount)
+
+mean(Advanced$Amount)
+mean(Broad$Amount)
+mean(Exact$Amount)
+mean(Standard$Amount)
+
+#Total Volume of Bookings
+# summary(Advanced$`Total Volume of Bookings`)
+# summary(Broad$`Total Volume of Bookings`)
+# summary(Exact$`Total Volume of Bookings`)
+# summary(Standard$`Total Volume of Bookings`)
+
+mean(Advanced$`Total Volume of Bookings`)
+mean(Broad$`Total Volume of Bookings`)
+mean(Exact$`Total Volume of Bookings`)
+mean(Standard$`Total Volume of Bookings`)
 
 #############################
 #Grouping method1 : Publisher
 #############################
-
 library(sqldf)
 sqldf("SELECT data.`Publisher Name`, 
 round(avg(data.`Engine Click Thru Percent`),2) as Engine_Click_Thru_perc, 
@@ -221,6 +257,7 @@ sqldf("SELECT data.`Campaign`,
 #Air France Branded performed the best
 
 AFB <- data[which(data$Campaign=="Air France Branded"), ]
+
 #############################
 # Multiple Ranking
 #############################
@@ -290,7 +327,7 @@ factor_to_num <- function(x){
       options <- unique(x[,i])
       if(length(options)<8) {
         for(z in 1:length(options)){
-          x[,i]<- gsub(as.numeric(options[z]),paste(z), x[,i])
+          x[,i]<- gsub(as.numeric((options[z]),paste(z), x[,i]))
           
         }#closing z loop
         x[,i]<-as.numeric(x[,i])
@@ -315,10 +352,12 @@ num_df <- factor_to_num(x=data[1:30,])
 # lm(`Total Cost`~ Profit, data = data)
 # again, not correlated?
 
-########## kathy's attempt
+# Scatter Plot try
 str(my_new_df)
 plot(my_new_df$Impressions, my_new_df$Profit)
 abline(lm(my_new_df$Profit~my_new_df$Impressions))
+
+# Correlation Matrix
 
 install.packages("GGally")
 library(GGally)
