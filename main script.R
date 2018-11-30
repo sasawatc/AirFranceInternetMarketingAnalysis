@@ -115,8 +115,25 @@ ggplot(data, aes(x = as.factor(data$`Match Type`), y = log(data$`Profit`))) +
 #   geom_bar() +
 #   facet_wrap(~ data$`Profit Group`)
 
+#############################
+# Summaries per Match Type
+#############################
+sqldf("SELECT distinct data.`Match Type`
+      FROM data")
 
+keep <- c("Clicks", "Amount", "Total Volume of Booking")
 
+Advanced <- data[which(data$`Match Type`=="Advanced"), ]
+A_df <- subset(Advanced, select= keep)
+
+Broad <- data[which(data$`Match Type`=="Broad"), ]
+B_df <- data[, keep]
+
+Exact <- data[which(data$`Match Type`=="Exact"), ]
+
+Standard <- data[which(data$`Match Type`=="Standard"), ]
+
+summary(Advanced)
 
 #############################
 #Grouping method1 : Publisher
@@ -247,34 +264,66 @@ char_to_num <- function(x){
   }#closing the for loop
   return(x)
 }#closing char_to_num function
+
 my_new_df <- char_to_num(x=data[1:30,])
+#### Keyword Group and Category should not be numeric (>20 distinct values)
+#### Campaign could be numeric (if increase distinct values to (has 24 distinct values)
 
 my_new_df
 
 str(my_new_df)
+str(data)
 
+sqldf("SELECT distinct data.`Campaign`
+      FROM data")
+
+###########################
+##Factor to Num
+##########################
+
+factor_to_num <- function(x){
+  x <- as.data.frame(x)#need to make sure that this is a data frame
+  n_col_x <- ncol(x) #getting the count of columns for this data frame
+  for (i in 1:n_col_x){
+    if(is.factor(x[,i])){
+      options <-c()
+      options <- unique(x[,i])
+      if(length(options)<8) {
+        for(z in 1:length(options)){
+          x[,i]<- gsub(as.numeric(options[z]),paste(z), x[,i])
+          
+        }#closing z loop
+        x[,i]<-as.numeric(x[,i])
+      }#closing my options if statement
+    }#closing if statement
+  }#closing the for loop
+  return(x)
+}#closing factor_to_num function
+
+num_df <- factor_to_num(x=data[1:30,])
+#### help! NAs introduced by coercion
 
 ##########################
 ##Correlation
 ##########################
-library(magrittr)
-library(dplyr)
-data %>%
-  summarize(r = cor(`Total Cost`, Profit))
-# so...cost and profit are not related cuz r is 0.48??
-
-lm(`Total Cost`~ Profit, data = data)
+#library(magrittr)
+#library(dplyr)
+# #data %>%
+#   summarize(r = cor(`Total Cost`, Profit))
+# # so...cost and profit are not related cuz r is 0.48??
+# 
+# lm(`Total Cost`~ Profit, data = data)
 # again, not correlated?
 
 ########## kathy's attempt
+str(my_new_df)
 plot(my_new_df$Impressions, my_new_df$Profit)
 abline(lm(my_new_df$Profit~my_new_df$Impressions))
-cor_matrix <- cor(my_new_df[,11:27])
 
 install.packages("GGally")
 library(GGally)
 #ggcorr() automatically plots only numeric variables
-ggcorr(my_new_df,
+ggcorr(data,
        label = T,
        label_alpha = 0.5,
        label_size = 2,
@@ -283,8 +332,13 @@ ggcorr(my_new_df,
        hjust = 0.75,
        nbreaks = 6,
        angle = -45,
-       legend.size = 7)
+       legend.size = 7,
+       label_round = 2)
 
+ggpairs(my_new_df,
+        columns = c("ROI", "Keyword Group", "Clicks"),
+        upper = list(continuous = wrap("cor", size = 10)),
+        lower = list(continuous = "smooth"))
 
 #########################
 ##Regression
