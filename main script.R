@@ -172,6 +172,33 @@ mean(Broad$`Total Volume of Bookings`)
 mean(Exact$`Total Volume of Bookings`)
 mean(Standard$`Total Volume of Bookings`)
 
+# Compute summary statistics (count, mean, sd) for Amount
+# by Bid Strategy group 
+
+levels(my_new_df$`Bid Strategy`)
+library(dplyr)
+group_by(my_new_df, `Bid Strategy`) %>%
+  summarise(
+    count = n(),
+    mean = mean(Amount, na.rm = TRUE),
+    sd = sd(Amount, na.rm = TRUE)
+  )
+# For Clicks by Bid Strategy
+group_by(my_new_df, `Bid Strategy`) %>%
+  summarise(
+    count = n(),
+    mean = mean(Clicks, na.rm = TRUE),
+    sd = sd(Clicks, na.rm = TRUE)
+  )
+
+#Match type
+group_by(my_new_df, `Match Type`) %>%
+  summarise(
+    count = n(),
+    mean = mean(Clicks, na.rm = TRUE),
+    sd = sd(Clicks, na.rm = TRUE)
+  )
+
 #############################
 #Grouping method1 : Publisher
 #############################
