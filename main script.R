@@ -251,7 +251,7 @@ my_new_df <- char_to_num(x=data[1:30,])
 
 my_new_df
 
-
+str(my_new_df)
 
 
 ##########################
@@ -265,6 +265,19 @@ data %>%
 
 lm(`Total Cost`~ Profit, data = data)
 # again, not correlated?
+
+########## kathy's attempt
+plot(my_new_df$Impressions, my_new_df$Profit)
+abline(lm(my_new_df$Profit~my_new_df$Impressions))
+cor_matrix <- cor(my_new_df[,11:27])
+
+install.packages("GGally")
+library(GGally)
+#ggcorr() automatically plots only numeric variables
+ggcorr(my_new_df,
+       label = T,
+       label_alpha = 0.8)
+
 
 #########################
 ##Regression
