@@ -570,9 +570,9 @@ ggplot(high_ROA, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
 #####################
 # limit dataset
 #####################
-data_limit <- data.frame(data)
+data_limit <- data.frame(data, check.names = FALSE)
 data_limit <- data_limit[data_limit$Clicks >= median(data_limit$Clicks),]
-data_limit <- data_limit[data_limit$Trans.Conv.Percent >= median(data_limit$Trans.Conv.Percent),]
+data_limit <- data_limit[data_limit$`Trans Conv Percent` >= median(data_limit$`Trans Conv Percent`),]
 data_limit <- data_limit[data_limit$Impressions >= median(data_limit$Impressions),]
 data_limit <- data_limit[data_limit$Engine.Click.Thru.Percent >= median(data_limit$Engine.Click.Thru.Percent),]
 summary(data_limit$ROA)
@@ -597,10 +597,18 @@ ggplot(high_ROI_limit, aes(x = `Total Volume of Bookings`, y = ROI, color = `Key
   geom_jitter(size = 4)
 # keyword group: 
 
+# ROI vs Total Volume of Bookings by Keyword
+ggplot(high_ROI_limit, aes(x = `Total Volume of Bookings`, y = ROI, color = Keyword)) + 
+  geom_jitter(size = 4)
+
 # ROI vs Total cost by Keyword Group
 ggplot(high_ROI_limit, aes(x = `Total Cost`, y = ROI, color = `Keyword Group`)) +
   geom_jitter(size = 4)
 # keyword group: 
+
+# ROI vs Total cost by Keyword
+ggplot(high_ROI_limit, aes(x = `Total Cost`, y = ROI, color = Keyword)) +
+  geom_jitter(size = 4)
 
 # ROI vs Total volume of Bookings by Match Type
 ggplot(high_ROI_limit, aes(x = `Total Volume of Bookings`, y = ROI, color = `Match Type`)) + 
@@ -628,22 +636,22 @@ ggplot(high_ROA_limit, aes(x=ROA)) +
 # ROA vs Total Volume of Bookings by Publisher Name
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
   geom_point(size = 4)
-# Publisher name: Yahoo-US
+# Publisher name: Overture - US and overture - Global
 
-# ROA vs Total Volume of Bookings by Keyword Group
-ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Keyword Group`)) + 
+# ROA vs Total Volume of Bookings by Keyword
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = Keyword)) + 
   geom_point(size = 4)
-# keyword group: Florence
+# keyword group: airfrance.com
 
-# ROA vs Total cost by Keyword Group
-ggplot(high_ROA_limit, aes(x = `Total Cost`, y = ROA, color = `Keyword Group`)) +
+# ROA vs Total cost by Keyword
+ggplot(high_ROA_limit, aes(x = `Total Cost`, y = ROA, color = Keyword)) +
   geom_point(size = 4)
-# keyword group: Florence
+# keyword group: airplane france ticket
 
 # ROA vs Total volume of Bookings by Match Type
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Match Type`)) + 
   geom_point(size = 4)
-# Match Type: Advanced
+# Match Type: Standard
 
 # ROA vs Total cost by Match Type
 ggplot(high_ROA_limit, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
