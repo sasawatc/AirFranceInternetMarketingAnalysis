@@ -79,6 +79,8 @@ for(row in 1:nrow(data)){
   }
 }
 
+summary(data$ROA)
+
 #############################
 ## Data exploration
 #############################
@@ -320,7 +322,7 @@ round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid,
 ###########################
 ## Factor to Num
 ##########################
-data.num[] <- lapply(data.num, function(x){
+data[] <- lapply(data, function(x){
   if(is.factor(x)) as.numeric(x) else x
 })
 
@@ -571,7 +573,9 @@ ggplot(high_ROA, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
 data_limit <- data.frame(data)
 data_limit <- data_limit[data_limit$Clicks >= median(data_limit$Clicks),]
 data_limit <- data_limit[data_limit$Trans.Conv.Percent >= median(data_limit$Trans.Conv.Percent),]
-
+data_limit <- data_limit[data_limit$Impressions >= median(data_limit$Impressions),]
+data_limit <- data_limit[data_limit$Engine.Click.Thru.Percent >= median(data_limit$Engine.Click.Thru.Percent),]
+summary(data_limit$ROA)
 ######################
 # plot ROI in data_limit
 ######################
@@ -579,7 +583,7 @@ ggplot(data_limit, aes(x=ROI)) +
   geom_histogram()
 head(data$ROI, 300)
 
-high_ROI_limit <- data[data_limit$ROI >= 100,]
+high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
 ggplot(high_ROI_limit, aes(x=ROI)) + 
   geom_histogram()
 
@@ -679,7 +683,7 @@ ggplot(no_outlier, aes(x = `Total Cost`, y = ROI, color = factor(`Publisher Name
 ggplot(no_outlier, aes(x = `Total Cost`, y = ROI, color = factor(`Match Type`))) +
   geom_point(alpha = 0.5, size = 4)
 
-ggplot(data, aes(x = `Match Type`, y = ROI)) + 
+ggplot(data, aes(x = `Match Type`, y = ROA)) + 
   geom_jitter() +
   theme_bw()
 
