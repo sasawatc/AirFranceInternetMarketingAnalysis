@@ -514,14 +514,27 @@ ggplot(high_ROI, aes(x=ROI)) +
 # ROI vs Total Volume of Bookings by Publisher Name
 ggplot(high_ROI, aes(x = `Total Volume of Bookings`, y = ROI, color = `Publisher Name`)) +
   geom_jitter(size = 4)
+# Publisher name: Yahoo-US
 
 # ROI vs Total Volume of Bookings by Keyword Group
 ggplot(high_ROI, aes(x = `Total Volume of Bookings`, y = ROI, color = `Keyword Group`)) + 
   geom_jitter(size = 4)
+# keyword group: Florence
 
 # ROI vs Total cost by Keyword Group
 ggplot(high_ROI, aes(x = `Total Cost`, y = ROI, color = `Keyword Group`)) +
   geom_jitter(size = 4)
+# keyword group: Florence
+
+# ROI vs Total volume of Bookings by Match Type
+ggplot(high_ROI, aes(x = `Total Volume of Bookings`, y = ROI, color = `Match Type`)) + 
+  geom_jitter(size = 4)
+# Match Type: Advanced
+
+# ROI vs Total cost by Match Type
+ggplot(high_ROI, aes(x= `Total Cost`, y = ROI, color = `Match Type`)) +
+  geom_jitter(size = 4)
+# Match Type: Advanced
   
 ######################
 #Might use later
