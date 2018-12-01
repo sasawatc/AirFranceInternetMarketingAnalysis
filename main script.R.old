@@ -574,7 +574,7 @@ data_limit <- data.frame(data, check.names = FALSE)
 data_limit <- data_limit[data_limit$Clicks >= median(data_limit$Clicks),]
 data_limit <- data_limit[data_limit$`Trans Conv Percent` >= median(data_limit$`Trans Conv Percent`),]
 data_limit <- data_limit[data_limit$Impressions >= median(data_limit$Impressions),]
-data_limit <- data_limit[data_limit$Engine.Click.Thru.Percent >= median(data_limit$Engine.Click.Thru.Percent),]
+data_limit <- data_limit[data_limit$`Engine Click Thru Percent` >= median(data_limit$`Engine Click Thru Percent`),]
 summary(data_limit$ROA)
 ######################
 # plot ROI in data_limit
@@ -653,10 +653,18 @@ ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Mat
   geom_point(size = 4)
 # Match Type: Standard
 
+ggplot(data_limit, aes(x = `Engine Click Thru Percent`, y = `Trans Conv Percent`, color = `Match Type`)) +
+  geom_point(size = 4)
+
 # ROA vs Total cost by Match Type
 ggplot(high_ROA_limit, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
   geom_point(size = 4)
 # Match Type: Advanced
+
+# ROA vs Total cost by publisher 
+ggplot(data_limit, aes(x= `Total Cost`, y = ROA, color = `Publisher Name`)) + 
+  geom_point(size = 4)
+# Publisher Name: Overture
 
 
 

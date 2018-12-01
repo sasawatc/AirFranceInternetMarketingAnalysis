@@ -364,20 +364,36 @@ ggplot(data_limit, aes(x=ROA)) +
   geom_histogram()
 head(round(data$ROA), 300)
 
-high_ROA_limit <- data_limit[data_limit$ROA >= 100,]
+high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
 ggplot(high_ROA_limit, aes(x=ROA)) + 
   geom_histogram()
 
 
 # ROA vs Total Volume of Bookings by Publisher Name
+
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
-  geom_point(size = 4)
+  geom_point(size = 4) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Publisher Success") +
+  xlab("Total Volume of Bookings") +
+  ylab("ROA(%)") +
+  labs(color = "Publisher Name")
+highlight 
+ggplot()+
+  geom_point(high_ROA_limit[high_ROA_limit$ROA <= 300 && high_ROA_limit$`Total Volume of Bookings` <= 190,],
+             aes(x = `Total Volume of Bookings`, y = ROA, color = "gray")) +
+  geom_point(high_ROA_limit[high_ROA_limit$ROA > 300 | high_ROA_limit$`Total Volume of Bookings` > 190,], 
+             aes(x = `Total Volume of Bookings`, y = ROA, color =`Publisher Name`))
 # Publisher name: Yahoo-US
 
 # ROA vs Total Volume of Bookings by Keyword Group
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Keyword Group`)) + 
   geom_point(size = 4)
 # keyword group: Florence
+
+# ROA vs Total Volume of Bookings by Match type
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Match Type`)) + 
+  geom_point(size = 4)
 
 # ROA vs Total cost by Keyword Group
 ggplot(high_ROA_limit, aes(x = `Total Cost`, y = ROA, color = `Keyword Group`)) +
@@ -394,7 +410,16 @@ ggplot(high_ROA_limit, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
   geom_point(size = 4)
 # Match Type: Advanced
 
+# ROA vs Total cost by publisher 
+ggplot(data_limit, aes(x= `Total Cost`, y = ROA, color = `Publisher Name`)) + 
+  geom_point(size = 4)
+# Publisher Name: Overture
 
+ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color = ROA)) +
+  geom_point(size = 4)
+
+ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
+  geom_point(size = 4)
 
 ######################
 #Might use later
