@@ -407,7 +407,7 @@ ggpairs(my_new_df,
         lower = list(continuous = "smooth"))
 
 #########################
-##Regression
+##Regression of profit group
 #########################
 
 # Split the data into training and test set
@@ -455,6 +455,74 @@ summary(both)
 # coef(step.model)
 
 
+#########################
+##Regression of ROI
+#########################
+ROI_no_id <- data.frame(data)
+for (ROI in 1:nrow(data)){
+  if (data$ROI[ROI] > 0 ){
+    ROI_no_id$Target_ROI[ROI] <- 1 
+  } # closing if statement
+  else if (data$ROI[ROI] <= 0){
+    ROI_no_id$Target_ROI[ROI] <- 0
+  }# closing else if statement
+  else {
+    ROI_no_id$Target_ROI[ROI] <- 1000 # large number to attract eyes
+  } # closing else statement
+} # close for loop
+ROI_no_id$Keyword.ID <- NULL # data can not be logged
+ROI_no_id$Profit <- NULL # we added in, should be not include in the model
+ROI_no_id$ROI <- NULL # we added in, should be not include in the model
+ROI_no_id$Profit.Group <- NULL # we added in, should be not include in the model
+ROI_no_id$Profit.Trans <- NULL # we added in, should be not include in the model
+ROI_no_id$Amount.Booking <- NULL # we added in, should be not include in the model
+ROI_no_id$Target <- NULL # we added in, should be not include in the model
+ROI_no_id$ROA <- NULL # we added in, should be not include in the model
+ROI_no_id$Keyword <- NULL # too many observations
+ROI_no_id$Keyword.Group <- NULL # too many observations
+ROI_no_id$Publisher.ID <- NULL # not relevant
+ROI_no_id$Status <- NULL # not relevant
+
+# model
+full_ROI <- glm(Target_ROI ~ ., data = ROI_no_id, family = "binomial")
+# coef(full.model)
+summary(full)
+
+# Select the most contributive variables
+both_ROI <- stepAIC(full_ROI, trace = FALSE)
+summary(both_ROI)
+
+#####################
+# result
+#####################
+# glm(formula = Target_ROI ~ Publisher.Name + Match.Type + Search.Engine.Bid + 
+#      Clicks + Avg.Cost.per.Click + Impressions + Engine.Click.Thru.Percent + 
+#      Trans.Conv.Percent + Total.Cost.Trans + Amount + Total.Cost + 
+#      Total.Volume.of.Bookings, family = "binomial", data = ROI_no_id)
+
+######################
+# plot ROI
+######################
+ggplot(data, aes(x=ROI)) + 
+  geom_histogram()
+head(data$ROI, 300)
+
+high_ROI <- data[data$ROI >= 100,]
+ggplot(high_ROI, aes(x=ROI)) + 
+  geom_histogram()
+
+# ROI vs Total Volume of Bookings by Publisher Name
+ggplot(high_ROI, aes(x = `Total Volume of Bookings`, y = ROI, color = `Publisher Name`)) +
+  geom_jitter(size = 4)
+
+# ROI vs Total Volume of Bookings by Keyword Group
+ggplot(high_ROI, aes(x = `Total Volume of Bookings`, y = ROI, color = `Keyword Group`)) + 
+  geom_jitter(size = 4)
+
+# ROI vs Total cost by Keyword Group
+ggplot(high_ROI, aes(x = `Total Cost`, y = ROI, color = `Keyword Group`)) +
+  geom_jitter(size = 4)
+  
 ######################
 #Might use later
 ######################
