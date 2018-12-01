@@ -298,22 +298,22 @@ ggplot(high_ROA, aes(x=ROA)) +
 # ROA vs Total Volume of Bookings by Publisher Name
 ggplot(high_ROA, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
   geom_point(size = 4)
-# Publisher name: Yahoo-US
+# Publisher name: Overture - US and overture - Global
 
-# ROA vs Total Volume of Bookings by Keyword Group
-ggplot(high_ROA, aes(x = `Total Volume of Bookings`, y = ROA, color = `Keyword Group`)) + 
+# ROA vs Total Volume of Bookings by Keyword
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = Keyword)) + 
   geom_point(size = 4)
-# keyword group: Florence
+# keyword group: airfrance.com
 
-# ROA vs Total cost by Keyword Group
-ggplot(high_ROA, aes(x = `Total Cost`, y = ROA, color = `Keyword Group`)) +
+# ROA vs Total cost by Keyword
+ggplot(high_ROA_limit, aes(x = `Total Cost`, y = ROA, color = Keyword)) +
   geom_point(size = 4)
-# keyword group: Florence
+# keyword group: airplane france ticket
 
 # ROA vs Total volume of Bookings by Match Type
 ggplot(high_ROA, aes(x = `Total Volume of Bookings`, y = ROA, color = `Match Type`)) + 
   geom_point(size = 4)
-# Match Type: Advanced
+# Match Type: Standard
 
 # ROA vs Total cost by Match Type
 ggplot(high_ROA, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
