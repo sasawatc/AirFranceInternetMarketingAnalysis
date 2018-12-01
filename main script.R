@@ -11,7 +11,8 @@ clean_data <- read_csv("data/processed/clean_data.csv",
                                         `Publisher Name` = col_factor(NULL),
                                         `Bid Strategy` = col_factor(NULL),
                                         `Match Type` = col_factor(NULL),
-                                        `Status` = col_factor(NULL)))
+                                        `Status` = col_factor(NULL),
+                                        `Search Engine Bid` = col_skip()))
 
 # View(clean_data)
 
@@ -456,6 +457,40 @@ summary(both_ROI)
 #      Trans.Conv.Percent + Total.Cost.Trans + Amount + Total.Cost + 
 #      Total.Volume.of.Bookings, family = "binomial", data = ROI_no_id)
 
+
+######################
+# ROA
+######################
+ROA_no_id <- data.frame(data)
+for (ROA in 1:nrow(ROA_no_id)){
+  if (ROA_no_id$ROA[ROA] > 0 ){
+    ROA_no_id$Target_ROA[ROA] <- 1 
+  } # closing if statement
+  else if (ROA_no_id$ROA[ROA] <= 0){
+    ROA_no_id$Target_ROA[ROA] <- 0
+  }# closing else if statement
+  else {
+    ROA_no_id$Target_ROA[ROA] <- 1000 # large number to attract eyes
+  } # closing else statement
+} # close for loop
+ROA_no_id$Keyword.ID <- NULL # data can not be logged
+ROA_no_id$Profit <- NULL # we added in, should be not include in the model
+ROA_no_id$ROI <- NULL # we added in, should be not include in the model
+ROA_no_id$Profit.Group <- NULL # we added in, should be not include in the model
+ROA_no_id$Profit.Trans <- NULL # we added in, should be not include in the model
+ROA_no_id$Amount.Booking <- NULL # we added in, should be not include in the model
+ROA_no_id$Target <- NULL # we added in, should be not include in the model
+ROA_no_id$ROA <- NULL # we added in, should be not include in the model
+ROA_no_id$Keyword <- NULL # too many observations
+ROA_no_id$Keyword.Group <- NULL # too many observations
+ROA_no_id$Publisher.ID <- NULL # not relevant
+ROA_no_id$Status <- NULL # not relevant
+
+full_ROA <- glm(Target_ROA~., data = ROA_no_id, family = "binomial")
+
+both_ROA <- stepAIC(full_ROA, trace = FALSE)
+summary(both_ROA)
+
 ######################
 # plot ROI
 ######################
@@ -492,6 +527,127 @@ ggplot(high_ROI, aes(x= `Total Cost`, y = ROI, color = `Match Type`)) +
   geom_jitter(size = 4)
 # Match Type: Advanced
   
+
+######################
+# plot ROA
+######################
+ggplot(data, aes(x=ROA)) + 
+  geom_histogram()
+head(round(data$ROA), 300)
+
+high_ROA <- data[data$ROA >= 100,]
+ggplot(high_ROA, aes(x=ROA)) + 
+  geom_histogram()
+
+
+# ROA vs Total Volume of Bookings by Publisher Name
+ggplot(high_ROA, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
+  geom_point(size = 4)
+# Publisher name: Yahoo-US
+
+# ROA vs Total Volume of Bookings by Keyword Group
+ggplot(high_ROA, aes(x = `Total Volume of Bookings`, y = ROA, color = `Keyword Group`)) + 
+  geom_point(size = 4)
+# keyword group: Florence
+
+# ROA vs Total cost by Keyword Group
+ggplot(high_ROA, aes(x = `Total Cost`, y = ROA, color = `Keyword Group`)) +
+  geom_point(size = 4)
+# keyword group: Florence
+
+# ROA vs Total volume of Bookings by Match Type
+ggplot(high_ROA, aes(x = `Total Volume of Bookings`, y = ROA, color = `Match Type`)) + 
+  geom_point(size = 4)
+# Match Type: Advanced
+
+# ROA vs Total cost by Match Type
+ggplot(high_ROA, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
+  geom_point(size = 4)
+# Match Type: Advanced
+
+#####################
+# limit dataset
+#####################
+data_limit <- data.frame(data)
+data_limit <- data_limit[data_limit$Clicks >= median(data_limit$Clicks),]
+data_limit <- data_limit[data_limit$Trans.Conv.Percent >= median(data_limit$Trans.Conv.Percent),]
+
+######################
+# plot ROI in data_limit
+######################
+ggplot(data_limit, aes(x=ROI)) + 
+  geom_histogram()
+head(data$ROI, 300)
+
+high_ROI_limit <- data[data_limit$ROI >= 100,]
+ggplot(high_ROI_limit, aes(x=ROI)) + 
+  geom_histogram()
+
+# ROI vs Total Volume of Bookings by Publisher Name
+ggplot(high_ROI_limit, aes(x = `Total Volume of Bookings`, y = ROI, color = `Publisher Name`)) +
+  geom_jitter(size = 4)
+# Publisher name: 
+
+# ROI vs Total Volume of Bookings by Keyword Group
+ggplot(high_ROI_limit, aes(x = `Total Volume of Bookings`, y = ROI, color = `Keyword Group`)) + 
+  geom_jitter(size = 4)
+# keyword group: 
+
+# ROI vs Total cost by Keyword Group
+ggplot(high_ROI_limit, aes(x = `Total Cost`, y = ROI, color = `Keyword Group`)) +
+  geom_jitter(size = 4)
+# keyword group: 
+
+# ROI vs Total volume of Bookings by Match Type
+ggplot(high_ROI_limit, aes(x = `Total Volume of Bookings`, y = ROI, color = `Match Type`)) + 
+  geom_jitter(size = 4)
+# Match Type: 
+
+# ROI vs Total cost by Match Type
+ggplot(high_ROI_limit, aes(x= `Total Cost`, y = ROI, color = `Match Type`)) +
+  geom_jitter(size = 4)
+# Match Type: 
+
+
+######################
+# plot ROA in data_limit
+######################
+ggplot(data_limit, aes(x=ROA)) + 
+  geom_histogram()
+head(round(data$ROA), 300)
+
+high_ROA_limit <- data_limit[data_limit$ROA >= 100,]
+ggplot(high_high_ROA_limitROI, aes(x=ROA)) + 
+  geom_histogram()
+
+
+# ROA vs Total Volume of Bookings by Publisher Name
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
+  geom_point(size = 4)
+# Publisher name: Yahoo-US
+
+# ROA vs Total Volume of Bookings by Keyword Group
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Keyword Group`)) + 
+  geom_point(size = 4)
+# keyword group: Florence
+
+# ROA vs Total cost by Keyword Group
+ggplot(high_ROA_limit, aes(x = `Total Cost`, y = ROA, color = `Keyword Group`)) +
+  geom_point(size = 4)
+# keyword group: Florence
+
+# ROA vs Total volume of Bookings by Match Type
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Match Type`)) + 
+  geom_point(size = 4)
+# Match Type: Advanced
+
+# ROA vs Total cost by Match Type
+ggplot(high_ROA_limit, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
+  geom_point(size = 4)
+# Match Type: Advanced
+
+
+
 ######################
 #Might use later
 ######################
