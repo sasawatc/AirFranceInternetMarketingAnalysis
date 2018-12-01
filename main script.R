@@ -1,8 +1,10 @@
+library(ggplot2)
+library(readr)
+library(dplyr)
+
 ############################
 #Import Clean Data
 ############################
-
-library(readr)
 clean_data <- read_csv("data/processed/clean_data.csv",
                        col_types = cols(`Keyword ID` = col_character(),
                                         `Publisher ID` = col_factor(NULL),
@@ -38,6 +40,17 @@ summary(data$ROA)
 # ROI has infinity data, remove that point.
 data <- subset(data, `Keyword ID` != "43000000013971488")
 
+colSums(is.na(data))
+# when I call this, there are no NAs anywhere
+# but when you manually sort Match Type column, there are NAs there
+levels(data$`Match Type`)
+# N/A is a match type (Not Applicable), all from Google (US and Global). Consider deleting.
+which(is.na(data$`Publisher ID`))
+# Seems like all rows containing No Strategy (originally NAs) & N/A as match type are internal searches from Google
+# Just delete the N/A rows and data should be clean
+
+data <- subset(data, `Bid Strategy` != "No Strategy")
+
 #Group by Profit
 #A-Above Mean, B-between Mean and 0, C-under 0
 for (i in 1:nrow(data)) {
@@ -65,7 +78,6 @@ for(row in 1:nrow(data)){
   }
 }
 
-
 #############################
 ## Data exploration
 #############################
@@ -82,8 +94,6 @@ round(prop.table(table(data$`Publisher Name`, data$`Profit Group`), 2)*100)
 # Keyword Match Type vs. Profit Group
 table(data$`Match Type`, data$`Profit Group`)
 round(prop.table(table(data$`Match Type`, data$`Profit Group`), 2)*100)
-
-library(ggplot2)
 
 # side-by-side barchart of Publisher by Profit Group
 ggplot(data, aes(x = data$`Publisher Name`, fill = data$`Profit Group`)) + 
@@ -176,7 +186,7 @@ mean(Standard$`Total Volume of Bookings`)
 # by Bid Strategy group 
 
 levels(my_new_df$`Bid Strategy`)
-library(dplyr)
+
 group_by(my_new_df, `Bid Strategy`) %>%
   summarise(
     count = n(),
@@ -307,65 +317,11 @@ round(avg(data.`Search Engine Bid`),2) as Search_Engine_Bid,
 # Google - US  Exact  No Strategy  perform best
 
 ###########################
-##Char to Num
+## Factor to Num
 ##########################
-
-char_to_num <- function(x){
-  x <- as.data.frame(x)#need to make sure that this is a data frame
-  n_col_x <- ncol(x) #getting the count of columns for this data frame
-  for (i in 1:n_col_x){
-    if(is.character(x[,i])){
-      options <-c()
-      options <- unique(x[,i])
-      if(length(options)<20) {
-        for(z in 1:length(options)){
-          x[,i]<- gsub(as.character(options[z]),paste(z), x[,i])
-          
-        }#closing z loop
-        x[,i]<-as.numeric(x[,i])
-      }#closing my options if statement
-    }#closing if statement
-  }#closing the for loop
-  return(x)
-}#closing char_to_num function
-
-my_new_df <- char_to_num(x=data[1:30,])
-#### Keyword Group and Category should not be numeric (>20 distinct values)
-#### Campaign could be numeric (if increase distinct values to (has 24 distinct values)
-
-my_new_df
-
-str(my_new_df)
-str(data)
-
-sqldf("SELECT distinct data.`Campaign`
-      FROM data")
-
-###########################
-##Factor to Num
-##########################
-
-factor_to_num <- function(x){
-  x <- as.data.frame(x)#need to make sure that this is a data frame
-  n_col_x <- ncol(x) #getting the count of columns for this data frame
-  for (i in 1:n_col_x){
-    if(is.factor(x[,i])){
-      options <-c()
-      options <- unique(x[,i])
-      if(length(options)<8) {
-        for(z in 1:length(options)){
-          x[,i]<- gsub(as.numeric((options[z]),paste(z), x[,i]))
-          
-        }#closing z loop
-        x[,i]<-as.numeric(x[,i])
-      }#closing my options if statement
-    }#closing if statement
-  }#closing the for loop
-  return(x)
-}#closing factor_to_num function
-
-num_df <- factor_to_num(x=data[1:30,])
-#### help! NAs introduced by coercion
+data.num[] <- lapply(data.num, function(x){
+  if(is.factor(x)) as.numeric(x) else x
+})
 
 ##########################
 ##Correlation
@@ -386,7 +342,7 @@ abline(lm(my_new_df$Profit~my_new_df$Impressions))
 
 # Correlation Matrix
 
-install.packages("GGally")
+#install.packages("GGally")
 library(GGally)
 #ggcorr() automatically plots only numeric variables
 ggcorr(data,
@@ -574,3 +530,8 @@ ggplot(data, aes(x = `Match Type`, y = ROI)) +
 sqldf("SELECT `Publisher Name`, `Match Type`, Amount, `Total Cost`, Profit, ROI
       FROM has_booking
       ORDER BY ROI DESC")
+
+######################
+# Optimize for ROA
+######################
+# objective is the mean of high performance group A or B
