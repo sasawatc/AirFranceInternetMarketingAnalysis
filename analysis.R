@@ -479,6 +479,7 @@ ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = `Total Cost`, color = `
 
 ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color = `Total Cost`)) +
   geom_boxplot() +
+  geom_point() +
   scale_color_gradient(low = 'blue', high = 'red') +
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
@@ -487,7 +488,9 @@ ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color
         axis.line = element_line(color = "black")) +
   ggtitle("Publisher Performance") +
   xlab("") +
-  ylab("Transaction Conversion Rate(%)")
+  ylab("Transaction Conversion Rate(%)") +
+  labs(color = "Total Cost")
+
 
 ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
   geom_point(size = 4)
