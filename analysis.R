@@ -477,12 +477,22 @@ ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = `Total Cost`, color = `
   geom_point(size = 4)
 
 ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color = `Total Cost`)) +
-  geom_violin() +
-  geom_point(size = 4) +
-  scale_color_gradient(low = 'blue', high = 'red')
+  geom_boxplot() +
+  scale_color_gradient(low = 'blue', high = 'red') +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black")) +
+  ggtitle("Publisher Performance") +
+  xlab("") +
+  ylab("Transaction Conversion Rate(%)")
 
 ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
   geom_point(size = 4)
+
+
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = ))
 
 ######################
 #Might use later
@@ -539,7 +549,7 @@ library(tidyr)
 data.num <- data %>%
   keep(negate(is.character)) %>%
   map_df(function(x) if(is.integer(x)) as.numeric(x) else x) %>%
-  factor_to_num
+  FactorToNum
 
 
 library(ggcorrplot)
