@@ -13,10 +13,10 @@ HightlightGreyoutScatterPlot <- function(main.df, highlight.df, x.col.name, y.co
   
   ggplot() +
     geom_point(data = greyout.df,
-               mapping = aes(greyout.df$x.col.name, greyout.df$y.col.name),
+               mapping = aes(greyout.df[[x.col.name]], greyout.df[[y.col.name]]),
                color = "grey", size = 4) +
     geom_point(data = highlight.df, 
-               mapping = aes(highlight.df$x.col.name, highlight.df$y.col.name, color = highlight.color), size = 4) +
+               mapping = aes(highlight.df[[x.col.name]], highlight.df[[y.col.name]], color = highlight.color), size = 4) +
     theme(plot.title = element_text(hjust = 0.5),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -30,15 +30,19 @@ HightlightGreyoutScatterPlot <- function(main.df, highlight.df, x.col.name, y.co
 
 HightlightGreyoutScatterPlot(main.df = high_ROA_limit, 
                              highlight.df = highlight, 
-                             x.col.name = `Total Volume of Bookings`,
-                             y.col.name = `ROA`,
-                             highlight.color = `Publisher Name`,
+                             x.col.name = 'Total Volume of Bookings',
+                             y.col.name = 'ROA',
+                             highlight.color = 'Publisher Name',
                              title = 'Publisher Success',
                              xlab = 'Total Volume of Bookings',
                              ylab = 'ROA(%)',
                              labs.color = 'Publisher Name')
 
 TestFunc <- function(df, col.name){
-  str(df$col.name)
+  df[[col.name]]
 }
-
+library(sqldf)
+sqldf('SELECT `Match Type`, AVG(`Clicks`), AVG(`Amount`), AVG(`Total Volume of Bookings`)
+    FROM data
+    GROUP BY `Match Type`
+    ;')
