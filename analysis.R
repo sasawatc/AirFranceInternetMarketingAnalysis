@@ -368,10 +368,9 @@ head(round(data$ROA), 300)
 ggplot(high_ROA_limit, aes(x=ROA)) + 
   geom_histogram()
 
-
 # ROA vs Total Volume of Bookings by Publisher Name
 highlight <- high_ROA_limit[high_ROA_limit$ROA > 300 | high_ROA_limit$`Total Volume of Bookings` > 190,]
-greyout <- high_ROA_limit[high_ROA_limit$ROA <= 300 & high_ROA_limit$`Total Volume of Bookings` <= 190,]
+greyout <- setdiff(high_ROA_limit, highlight)
 
 ggplot() +
   geom_point(data=greyout,
