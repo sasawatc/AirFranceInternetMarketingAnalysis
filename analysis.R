@@ -72,48 +72,7 @@ sqldf("SELECT distinct data.`Match Type`
 
 #keep <- c("Clicks", "Amount", "Total Volume of Booking")
 
-Advanced <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Advanced"), ]
 
-Broad <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Broad"), ]
-
-Exact <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Exact"), ]
-
-Standard <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Standard"), ]
-
-### How to show just means from summary for all 3 metrics at the same time?
-
-#Clicks
-# summary(Advanced$Clicks)
-# summary(Broad$Clicks)
-# summary(Exact$Clicks)
-# summary(Standard$Clicks)
-
-mean(Advanced$Clicks)
-mean(Broad$Clicks)
-mean(Exact$Clicks)
-mean(Standard$Clicks)
-
-#Amount
-# summary(Advanced$Amount)
-# summary(Broad$Amount)
-# summary(Exact$Amount)
-# summary(Standard$Amount)
-
-mean(Advanced$Amount)
-mean(Broad$Amount)
-mean(Exact$Amount)
-mean(Standard$Amount)
-
-#Total Volume of Bookings
-# summary(Advanced$`Total Volume of Bookings`)
-# summary(Broad$`Total Volume of Bookings`)
-# summary(Exact$`Total Volume of Bookings`)
-# summary(Standard$`Total Volume of Bookings`)
-
-mean(Advanced$`Total Volume of Bookings`)
-mean(Broad$`Total Volume of Bookings`)
-mean(Exact$`Total Volume of Bookings`)
-mean(Standard$`Total Volume of Bookings`)
 
 summary(high_ROA_limit$ROA)
 #############################
@@ -370,7 +329,10 @@ ggplot(high_ROA_limit, aes(x=ROA)) +
   geom_histogram()
 
 # ROA vs Total Volume of Bookings by Publisher Name
-highlight <- high_ROA_limit[high_ROA_limit$ROA > 300 | high_ROA_limit$`Total Volume of Bookings` > 190,]
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
+  geom_point(size = 4)
+
+highlight <- high_ROA_limit[high_ROA_limit$ROA > 300 | high_ROA_limit$`Total Volume of Bookings` > 300,]
 greyout <- setdiff(high_ROA_limit, highlight)
 
 ggplot() +
@@ -387,7 +349,7 @@ ggplot() +
   xlab("Total Volume of Bookings") +
   ylab("ROA(%)") +
   labs(color = "Publisher Name")
-# Publisher name: Yahoo-US
+# Publisher name: Yahoo-US, Overture-Global, Google-US
 
 # ROA vs Total Volume of Bookings by Keyword Group
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Keyword Group`)) + 
@@ -439,14 +401,17 @@ ggplot(data_limit, aes(x= `Total Cost`, y = ROA, color = `Publisher Name`)) +
 # Publisher Name: Overture
 
 
-standard <- high_ROA_limit[high_ROA_limit$`Match Type` == "Standard",]
-no_standard <- high_ROA_limit[high_ROA_limit$`Match Type` != "Standard",]
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = ROA, color = `Match Type`)) +
+  geom_point(size = 4)
+
+standard_advanced <- high_ROA_limit[high_ROA_limit$`Match Type` == "Standard" |high_ROA_limit$`Match Type` == "Advanced",]
+no_standard <- high_ROA_limit[high_ROA_limit$`Match Type` != "Standard" & high_ROA_limit$`Match Type` != "Advanced",]
 
 ggplot() +
   geom_point(data=no_standard,
-             mapping = aes(no_standard$`Total Volume of Bookings`, no_standard$ROA), color = "grey", size = 4) +
-  geom_point(standard, 
-             mapping = aes(standard$`Total Volume of Bookings`, standard$ROA, color =`Match Type`), size =4) +
+             mapping = aes(no_standard$`Trans Conv Percent`, no_standard$ROA), color = "grey", size = 4) +
+  geom_point(standard_advanced, 
+             mapping = aes(standard_advanced$`Trans Conv Percent`, standard_advanced$ROA, color =`Match Type`), size =4) +
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -457,13 +422,14 @@ ggplot() +
   ylab("ROA(%)") +
   labs(color = "Match Type")
 
-
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = `Total Cost`, color = `Match Type`)) +
+  geom_point(size = 4)
 
 ggplot() +
   geom_point(no_standard,
              mapping = aes(no_standard$`Trans Conv Percent`, no_standard$`Total Cost`), color = "grey", size = 4) +
-  geom_point(standard, 
-             mapping = aes(standard$`Trans Conv Percent`, standard$`Total Cost`, color =`Match Type`), size =4) +
+  geom_point(standard_advanced, 
+             mapping = aes(standard_advanced$`Trans Conv Percent`, standard_advanced$`Total Cost`, color =`Match Type`), size =4) +
   theme(plot.title = element_text(hjust = 0.5),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -589,7 +555,7 @@ hrl <- high_ROA_limit %>%
 tcrtop50 <- top_n(hrl, 50, tcr)
 
 
-ggplot(tcrtop30, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+ggplot(tcrtop50, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
   geom_bar(stat = "identity") +
   scale_fill_gradient(low = "gray", high = "black") +
   coord_flip() +

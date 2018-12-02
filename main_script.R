@@ -33,7 +33,7 @@
   # ROI has infinity data, remove that point.
   data <- subset(data, `Keyword ID` != "43000000013971488")
   
-  data <- subset(data, `Bid Strategy` != "No Strategy")
+  data <- subset(data, `Match Type` != "N/A")
   
   #Group by Profit
   #A-Above Mean, B-between Mean and 0, C-under 0
@@ -77,3 +77,47 @@
   high_ROA <- data[data$ROA >= 100,]
   high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
   high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
+  
+  
+  Advanced <- data[which(data$`Match Type`=="Advanced"), ]
+  
+  Broad <- data[which(data$`Match Type`=="Broad"), ]
+  
+  Exact <- data[which(data$`Match Type`=="Exact"), ]
+  
+  Standard <- data[which(data$`Match Type`=="Standard"), ]
+  
+  ### How to show just means from summary for all 3 metrics at the same time?
+  
+  #Clicks
+  # summary(Advanced$Clicks)
+  # summary(Broad$Clicks)
+  # summary(Exact$Clicks)
+  # summary(Standard$Clicks)
+  
+  mean(Advanced$Clicks)
+  mean(Broad$Clicks)
+  mean(Exact$Clicks)
+  mean(Standard$Clicks)
+  
+  #Amount
+  # summary(Advanced$Amount)
+  # summary(Broad$Amount)
+  # summary(Exact$Amount)
+  # summary(Standard$Amount)
+  
+  mean(Advanced$Amount)
+  mean(Broad$Amount)
+  mean(Exact$Amount)
+  mean(Standard$Amount)
+  
+  #Total Volume of Bookings
+  # summary(Advanced$`Total Volume of Bookings`)
+  # summary(Broad$`Total Volume of Bookings`)
+  # summary(Exact$`Total Volume of Bookings`)
+  # summary(Standard$`Total Volume of Bookings`)
+  
+  mean(Advanced$`Total Volume of Bookings`)
+  mean(Broad$`Total Volume of Bookings`)
+  mean(Exact$`Total Volume of Bookings`)
+  mean(Standard$`Total Volume of Bookings`)
