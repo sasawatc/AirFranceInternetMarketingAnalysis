@@ -78,10 +78,10 @@ summary(both_ROI)
 ######################
 ROA_no_id <- data.frame(data)
 for (ROA in 1:nrow(ROA_no_id)){
-  if (ROA_no_id$ROA[ROA] > 0 ){
+  if (ROA_no_id$ROA[ROA] > 100 ){
     ROA_no_id$Target_ROA[ROA] <- 1 
   } # closing if statement
-  else if (ROA_no_id$ROA[ROA] <= 0){
+  else if (ROA_no_id$ROA[ROA] <= 100){
     ROA_no_id$Target_ROA[ROA] <- 0
   }# closing else if statement
   else {
@@ -94,7 +94,7 @@ ROA_no_id$ROI <- NULL # we added in, should be not include in the model
 ROA_no_id$Profit.Group <- NULL # we added in, should be not include in the model
 ROA_no_id$Profit.Trans <- NULL # we added in, should be not include in the model
 ROA_no_id$Amount.Booking <- NULL # we added in, should be not include in the model
-ROA_no_id$Target <- NULL # we added in, should be not include in the model
+# ROA_no_id$Target <- NULL # we added in, should be not include in the model
 ROA_no_id$ROA <- NULL # we added in, should be not include in the model
 ROA_no_id$Keyword <- NULL # too many observations
 ROA_no_id$Keyword.Group <- NULL # too many observations
@@ -105,3 +105,9 @@ full_ROA <- glm(Target_ROA~., data = ROA_no_id, family = "binomial")
 
 both_ROA <- stepAIC(full_ROA, trace = FALSE)
 summary(both_ROA)
+
+
+
+
+full.lr <- glm(Target ~ `Trans Conv Percent`, data = data, family = "binomial")
+summary(full.lr)
