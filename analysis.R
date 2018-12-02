@@ -473,6 +473,14 @@ ggplot() +
   ylab("Total Cost($)") +
   labs(color = "Match Type")
 
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = `Total Cost`, color = `Publisher Name`)) +
+  geom_point(size = 4)
+
+ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color = `Total Cost`)) +
+  geom_violin() +
+  geom_point(size = 4) +
+  scale_color_gradient(low = 'blue', high = 'red')
+
 ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
   geom_point(size = 4)
 
@@ -539,3 +547,40 @@ corr <- round(cor(data.num), 1)
 
 ggcorrplot(corr, hc.order = TRUE, type = "lower",
            lab = TRUE)
+
+
+#######################
+##Keywords ranking
+#######################
+hrl <- high_ROA_limit %>%
+  group_by(Keyword) %>%
+  summarise(tcr=median(`Trans Conv Percent`))
+
+ggplot(hrl, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "gray", high = "black") +
+  coord_flip() +
+  labs(title = "What keywords should AirFrance care about?",
+       x = "") +
+  theme_gray()
+
+
+
+
+#top 50
+hrl <- high_ROA_limit %>%
+  group_by(Keyword) %>%
+  summarise(tcr=median(`Trans Conv Percent`))
+
+
+
+tcrtop50 <- top_n(hrl, 50, tcr)
+
+
+ggplot(tcrtop30, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "gray", high = "black") +
+  coord_flip() +
+  labs(title = "What keywords should AirFrance care about?",
+       x = "") +
+  theme_gray()

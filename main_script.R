@@ -48,17 +48,19 @@ for (i in 1:nrow(data)) {
 }
 
 for(row in 1:nrow(data)){
-  # add 1 column to convert both A and B in Profit Group into 1 in target, C into 0
-  if(data$`Profit Group`[row] == "A" | data$`Profit Group`[row] == "B"){
+  if(data$ROA[row] > 1){
     data$Target[row] <- 1
   }
-  else if(data$`Profit Group`[row] == "C"){
+  else if(data$ROA[row] <= 1){
     data$Target[row] <- 0
   }
   else{
     data$Target[row] <- 1000 #1000 arbitrary large number to draw attention
   }
 }
+
+lr <- glm(Target ~ `Trans Conv Percent`, data = data, family = "binomial")
+summary(lr)
 
 #####################
 # limit dataset
