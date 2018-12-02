@@ -407,6 +407,26 @@ ggplot(high_ROA_limit, aes(x = `Total Cost`, y = ROA, color = `Keyword Group`)) 
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Match Type`)) + 
   geom_point(size = 4)
 # Match Type: Advanced
+ggfunc <- function(greydata, gx, gy, hightlightdata, hx, hy, title, xlab, ylab, labs){
+ggplot() +
+  geom_point(data=greydata,
+             mapping = aes(greydata$gx, greydata$gy), color = "grey", size = 4) +
+  geom_point(highlight, 
+             mapping = aes(hightlightdata$hx, hightlightdata$hy, color =`Publisher Name`), size =4) +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black")) +
+  ggtitle(title) +
+  xlab(xlab) +
+  ylab(ylab) +
+  labs(color = labs)
+} # closing ggfunc
+
+ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = Keyword)) +
+  geom_point(size = 4)
+goodkeyword <- high_ROA_limit[high_ROA_limit$`Total Volume of Bookings` > 190 | high_ROA_limit$ROA > 300,]
 
 # ROA vs Total cost by Match Type
 ggplot(high_ROA_limit, aes(x= `Total Cost`, y = ROA, color = `Match Type`)) +
@@ -418,7 +438,20 @@ ggplot(data_limit, aes(x= `Total Cost`, y = ROA, color = `Publisher Name`)) +
   geom_point(size = 4)
 # Publisher Name: Overture
 
-ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color = ROA)) +
+
+standard <- high_ROA_limit[high_ROA_limit$`Match Type` == "Standard",]
+no_standard <- high_ROA_limit[high_ROA_limit$`Match Type` != "Standard",]
+
+ggfunc(greydata = no_standard, 
+       gx = `Trans Conv Percent`, 
+       gy = ROA, 
+       hightlightdata = standard, 
+       hx, hy, title, xlab, ylab, labs)
+
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = ROA, color = `Match Type`)) +
+  geom_point(size = 4)
+
+ggplot(high_ROA_limit, aes(x= `Trans Conv Percent`, y = `Total Cost`, color = `Match Type`)) +
   geom_point(size = 4)
 
 ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
