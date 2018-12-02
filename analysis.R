@@ -253,7 +253,7 @@ ggplot(data, aes(x=ROI)) +
   geom_histogram()
 head(data$ROI, 300)
 
-# high_ROI <- data[data$ROI >= 100,]
+high_ROI <- data[data$ROI >= 100,]
 ggplot(high_ROI, aes(x=ROI)) + 
   geom_histogram()
 
@@ -290,7 +290,7 @@ ggplot(data, aes(x=ROA)) +
   geom_histogram()
 head(round(data$ROA), 300)
 
-# high_ROA <- data[data$ROA >= 100,]
+high_ROA <- data[data$ROA >= 100,]
 ggplot(high_ROA, aes(x=ROA)) + 
   geom_histogram()
 
@@ -327,7 +327,7 @@ ggplot(data_limit, aes(x=ROI)) +
   geom_histogram()
 head(data$ROI, 300)
 
-# high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
+high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
 ggplot(high_ROI_limit, aes(x=ROI)) + 
   geom_histogram()
 
@@ -364,7 +364,7 @@ ggplot(data_limit, aes(x=ROA)) +
   geom_histogram()
 head(round(data$ROA), 300)
 
-# high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
+high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
 ggplot(high_ROA_limit, aes(x=ROA)) + 
   geom_histogram()
 
@@ -407,20 +407,20 @@ ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Mat
   geom_point(size = 4)
 # Match Type: Advanced
 ggfunc <- function(greydata, gx, gy, hightlightdata, hx, hy, title, xlab, ylab, labs){
-ggplot() +
-  geom_point(data=greydata,
-             mapping = aes(greydata$gx, greydata$gy), color = "grey", size = 4) +
-  geom_point(highlight, 
-             mapping = aes(hightlightdata$hx, hightlightdata$hy, color =`Publisher Name`), size =4) +
-  theme(plot.title = element_text(hjust = 0.5),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        axis.line = element_line(color = "black")) +
-  ggtitle(title) +
-  xlab(xlab) +
-  ylab(ylab) +
-  labs(color = labs)
+  ggplot() +
+    geom_point(data=greydata,
+               mapping = aes(greydata$gx, greydata$gy), color = "grey", size = 4) +
+    geom_point(highlight, 
+               mapping = aes(hightlightdata$hx, hightlightdata$hy, color =`Publisher Name`), size =4) +
+    theme(plot.title = element_text(hjust = 0.5),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(color = "black")) +
+    ggtitle(title) +
+    xlab(xlab) +
+    ylab(ylab) +
+    labs(color = labs)
 } # closing ggfunc
 
 ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = Keyword)) +
@@ -441,17 +441,37 @@ ggplot(data_limit, aes(x= `Total Cost`, y = ROA, color = `Publisher Name`)) +
 standard <- high_ROA_limit[high_ROA_limit$`Match Type` == "Standard",]
 no_standard <- high_ROA_limit[high_ROA_limit$`Match Type` != "Standard",]
 
-ggfunc(greydata = no_standard, 
-       gx = `Trans Conv Percent`, 
-       gy = ROA, 
-       hightlightdata = standard, 
-       hx, hy, title, xlab, ylab, labs)
+ggplot() +
+  geom_point(data=no_standard,
+             mapping = aes(no_standard$`Total Volume of Bookings`, no_standard$ROA), color = "grey", size = 4) +
+  geom_point(standard, 
+             mapping = aes(standard$`Total Volume of Bookings`, standard$ROA, color =`Match Type`), size =4) +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black")) +
+  ggtitle("Match Type Performance \nROA") +
+  xlab("Transaction Conversion Rate") +
+  ylab("ROA(%)") +
+  labs(color = "Match Type")
 
-ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = ROA, color = `Match Type`)) +
-  geom_point(size = 4)
 
-ggplot(high_ROA_limit, aes(x= `Trans Conv Percent`, y = `Total Cost`, color = `Match Type`)) +
-  geom_point(size = 4)
+
+ggplot() +
+  geom_point(no_standard,
+             mapping = aes(no_standard$`Trans Conv Percent`, no_standard$`Total Cost`), color = "grey", size = 4) +
+  geom_point(standard, 
+             mapping = aes(standard$`Trans Conv Percent`, standard$`Total Cost`, color =`Match Type`), size =4) +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black")) +
+  ggtitle("Match Type Performance \nTotal Cost") +
+  xlab("Transaction Conversion Rate") +
+  ylab("Total Cost($)") +
+  labs(color = "Match Type")
 
 ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
   geom_point(size = 4)
@@ -507,11 +527,11 @@ sqldf("SELECT `Publisher Name`, `Match Type`, Amount, `Total Cost`, Profit, ROI
 library(purrr)
 library(tidyr)
 
+
 data.num <- data %>%
-  select(-'Target') %>%
   keep(negate(is.character)) %>%
   map_df(function(x) if(is.integer(x)) as.numeric(x) else x) %>%
-  FactorToNUm
+  factor_to_num
 
 
 library(ggcorrplot)
@@ -519,4 +539,3 @@ corr <- round(cor(data.num), 1)
 
 ggcorrplot(corr, hc.order = TRUE, type = "lower",
            lab = TRUE)
-
