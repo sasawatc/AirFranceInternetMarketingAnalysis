@@ -540,7 +540,7 @@ library(tidyr)
 data.num <- data %>%
   keep(negate(is.character)) %>%
   map_df(function(x) if(is.integer(x)) as.numeric(x) else x) %>%
-  factor_to_num
+  FactorToNum
 
 
 library(ggcorrplot)
