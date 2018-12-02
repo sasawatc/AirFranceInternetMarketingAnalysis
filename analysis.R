@@ -253,7 +253,7 @@ ggplot(data, aes(x=ROI)) +
   geom_histogram()
 head(data$ROI, 300)
 
-high_ROI <- data[data$ROI >= 100,]
+# high_ROI <- data[data$ROI >= 100,]
 ggplot(high_ROI, aes(x=ROI)) + 
   geom_histogram()
 
@@ -290,7 +290,7 @@ ggplot(data, aes(x=ROA)) +
   geom_histogram()
 head(round(data$ROA), 300)
 
-high_ROA <- data[data$ROA >= 100,]
+# high_ROA <- data[data$ROA >= 100,]
 ggplot(high_ROA, aes(x=ROA)) + 
   geom_histogram()
 
@@ -327,7 +327,7 @@ ggplot(data_limit, aes(x=ROI)) +
   geom_histogram()
 head(data$ROI, 300)
 
-high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
+# high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
 ggplot(high_ROI_limit, aes(x=ROI)) + 
   geom_histogram()
 
@@ -364,7 +364,7 @@ ggplot(data_limit, aes(x=ROA)) +
   geom_histogram()
 head(round(data$ROA), 300)
 
-high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
+# high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
 ggplot(high_ROA_limit, aes(x=ROA)) + 
   geom_histogram()
 
@@ -508,11 +508,11 @@ sqldf("SELECT `Publisher Name`, `Match Type`, Amount, `Total Cost`, Profit, ROI
 library(purrr)
 library(tidyr)
 
-
 data.num <- data %>%
+  select(-'Target') %>%
   keep(negate(is.character)) %>%
   map_df(function(x) if(is.integer(x)) as.numeric(x) else x) %>%
-  factor_to_num
+  FactorToNUm
 
 
 library(ggcorrplot)
@@ -520,3 +520,4 @@ corr <- round(cor(data.num), 1)
 
 ggcorrplot(corr, hc.order = TRUE, type = "lower",
            lab = TRUE)
+
