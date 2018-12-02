@@ -68,3 +68,10 @@ data_limit <- data_limit[data_limit$Clicks >= median(data_limit$Clicks),]
 data_limit <- data_limit[data_limit$`Trans Conv Percent` >= median(data_limit$`Trans Conv Percent`),]
 data_limit <- data_limit[data_limit$Impressions >= median(data_limit$Impressions),]
 data_limit <- data_limit[data_limit$`Engine Click Thru Percent` >= median(data_limit$`Engine Click Thru Percent`),]
+data_limit$Target <- NULL
+
+
+high_ROI <- data[data$ROI >= 100,]
+high_ROA <- data[data$ROA >= 100,]
+high_ROI_limit <- data_limit[data_limit$ROI >= 100,]
+high_ROA_limit <- data_limit[data_limit$Profit >= 0,]
