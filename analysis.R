@@ -72,13 +72,13 @@ sqldf("SELECT distinct data.`Match Type`
 
 #keep <- c("Clicks", "Amount", "Total Volume of Booking")
 
-Advanced <- data[which(data$`Match Type`=="Advanced"), ]
+Advanced <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Advanced"), ]
 
-Broad <- data[which(data$`Match Type`=="Broad"), ]
+Broad <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Broad"), ]
 
-Exact <- data[which(data$`Match Type`=="Exact"), ]
+Exact <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Exact"), ]
 
-Standard <- data[which(data$`Match Type`=="Standard"), ]
+Standard <- high_ROA_limit[which(high_ROA_limit$`Match Type`=="Standard"), ]
 
 ### How to show just means from summary for all 3 metrics at the same time?
 
@@ -115,6 +115,7 @@ mean(Broad$`Total Volume of Bookings`)
 mean(Exact$`Total Volume of Bookings`)
 mean(Standard$`Total Volume of Bookings`)
 
+summary(high_ROA_limit$ROA)
 #############################
 #Grouping method1 : Publisher
 #############################
@@ -558,13 +559,11 @@ hrl <- high_ROA_limit %>%
 
 ggplot(hrl, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
   geom_bar(stat = "identity") +
-  scale_fill_gradient(low = "gray", high = "black") +
+  scale_fill_gradient(low = "gray", high = '#e03e32') +
   coord_flip() +
   labs(title = "What keywords should AirFrance care about?",
        x = "") +
   theme_gray()
-
-
 
 
 #top 50
@@ -584,3 +583,44 @@ ggplot(tcrtop30, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
   labs(title = "What keywords should AirFrance care about?",
        x = "") +
   theme_gray()
+
+#top 10
+library(ggplot2)
+hrl <- high_ROA_limit %>%
+  group_by(Keyword) %>%
+  summarise(tcr=median(`Trans Conv Percent`))
+
+
+
+tcrtop10 <- top_n(hrl, 10, tcr)
+
+
+ggplot(tcrtop10, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_gradient(low = "gray", high = '#e03e32') +
+  coord_flip() +
+  labs(x = "") +
+  theme_gray() +
+  theme(axis.text = element_text(size = 15))
+
+
+
+
+#bottom 10
+library(ggplot2)
+hrl <- high_ROA_limit %>%
+  group_by(Keyword) %>%
+  summarise(tcr=median(`Trans Conv Percent`))
+
+
+
+tcrbtm10 <- top_n(hrl, -10, tcr)
+
+
+ggplot(tcrbtm10, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  scale_fill_gradient(low = "gray", high = "gray") +
+  coord_flip() +
+  labs(x = "") +
+  theme_gray() +
+  theme(axis.text = element_text(size = 15))
