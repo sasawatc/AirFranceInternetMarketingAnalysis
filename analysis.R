@@ -462,7 +462,39 @@ ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
   geom_point(size = 4)
 
 
-ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = ))
+
+
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = ROA, color = `Bid Strategy`)) +
+  geom_point(size =4)
+
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = `Total Cost`, color = `Bid Strategy`)) +
+  geom_point(size =4)
+
+no_strategy <- high_ROA_limit[high_ROA_limit$`Bid Strategy` == "No Strategy",]
+strategy <- high_ROA_limit[high_ROA_limit$`Bid Strategy` != "No Strategy",]
+
+ggplot() +
+  geom_point(strategy,
+             mapping = aes(strategy$`Trans Conv Percent`, strategy$`Total Cost`), color = "grey", size = 4) +
+  geom_point(no_strategy, 
+             mapping = aes(no_strategy$`Trans Conv Percent`, no_strategy$`Total Cost`, color =`Bid Strategy`), size =4) +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black")) +
+  ggtitle("Bid Strategy Performance \nTotal Cost") +
+  xlab("Transaction Conversion Rate") +
+  ylab("Total Cost($)") +
+  labs(color = "Bid Strategy")
+
+
+
+
+
+ggplot(high_ROA_limit, aes(x = `Bid Strategy`, y = `Trans Conv Percent`)) +
+  geom_violin() +
+  geom_jitter()
 
 ######################
 #Might use later
