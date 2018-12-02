@@ -547,3 +547,40 @@ corr <- round(cor(data.num), 1)
 
 ggcorrplot(corr, hc.order = TRUE, type = "lower",
            lab = TRUE)
+
+
+#######################
+##Keywords ranking
+#######################
+hrl <- high_ROA_limit %>%
+  group_by(Keyword) %>%
+  summarise(tcr=median(`Trans Conv Percent`))
+
+ggplot(hrl, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "gray", high = "black") +
+  coord_flip() +
+  labs(title = "What keywords should AirFrance care about?",
+       x = "") +
+  theme_gray()
+
+
+
+
+#top 50
+hrl <- high_ROA_limit %>%
+  group_by(Keyword) %>%
+  summarise(tcr=median(`Trans Conv Percent`))
+
+
+
+tcrtop50 <- top_n(hrl, 50, tcr)
+
+
+ggplot(tcrtop30, aes(reorder(Keyword,tcr), log(tcr), fill = tcr)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "gray", high = "black") +
+  coord_flip() +
+  labs(title = "What keywords should AirFrance care about?",
+       x = "") +
+  theme_gray()
