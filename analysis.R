@@ -473,6 +473,14 @@ ggplot() +
   ylab("Total Cost($)") +
   labs(color = "Match Type")
 
+ggplot(high_ROA_limit, aes(x = `Trans Conv Percent`, y = `Total Cost`, color = `Publisher Name`)) +
+  geom_point(size = 4)
+
+ggplot(high_ROA_limit, aes(x = `Publisher Name`, y = `Trans Conv Percent`, color = `Total Cost`)) +
+  geom_violin() +
+  geom_point(size = 4) +
+  scale_color_gradient(low = 'blue', high = 'red')
+
 ggplot(high_ROA_limit, aes(x = `Match Type`, y = ROA)) +
   geom_point(size = 4)
 
