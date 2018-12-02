@@ -370,20 +370,23 @@ ggplot(high_ROA_limit, aes(x=ROA)) +
 
 
 # ROA vs Total Volume of Bookings by Publisher Name
+highlight <- high_ROA_limit[high_ROA_limit$ROA > 300 | high_ROA_limit$`Total Volume of Bookings` > 190,]
+greyout <- high_ROA_limit[high_ROA_limit$ROA <= 300 & high_ROA_limit$`Total Volume of Bookings` <= 190,]
 
-ggplot(high_ROA_limit, aes(x = `Total Volume of Bookings`, y = ROA, color = `Publisher Name`)) +
-  geom_point(size = 4) +
-  theme(plot.title = element_text(hjust = 0.5)) +
+ggplot() +
+  geom_point(data=greyout,
+             mapping = aes(greyout$`Total Volume of Bookings`, greyout$ROA), color = "grey", size = 4) +
+  geom_point(highlight, 
+             mapping = aes(highlight$`Total Volume of Bookings`, highlight$ROA, color =`Publisher Name`), size =4) +
+  theme(plot.title = element_text(hjust = 0.5),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        axis.line = element_line(color = "black")) +
   ggtitle("Publisher Success") +
   xlab("Total Volume of Bookings") +
   ylab("ROA(%)") +
   labs(color = "Publisher Name")
-highlight 
-ggplot()+
-  geom_point(high_ROA_limit[high_ROA_limit$ROA <= 300 && high_ROA_limit$`Total Volume of Bookings` <= 190,],
-             aes(x = `Total Volume of Bookings`, y = ROA, color = "gray")) +
-  geom_point(high_ROA_limit[high_ROA_limit$ROA > 300 | high_ROA_limit$`Total Volume of Bookings` > 190,], 
-             aes(x = `Total Volume of Bookings`, y = ROA, color =`Publisher Name`))
 # Publisher name: Yahoo-US
 
 # ROA vs Total Volume of Bookings by Keyword Group
